@@ -3,7 +3,7 @@ Contributors: cais
 Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options
 Requires at least: 2.9
-Tested up to: 3.2
+Tested up to: 3.3
 Stable tag: 1.9
 
 Displays most recent posts from a specific featured tag or tags.
@@ -117,8 +117,9 @@ Please stay current with your WordPress installation, your active theme, and you
 = 1.9 =
 * release ...
 * added link to end of excerpt style formats
-* fixed minor typos
 * add stylesheet to manage `bnsft-link` element
+* confirmed compatible with WordPress 3.3
+* minor code clean-up and organization
 
 = 1.8.5 =
 * released June 2011
