@@ -38,13 +38,17 @@ $exit_message = 'BNS Featured Tag requires WordPress version 2.8 or newer. <a hr
 if ( version_compare( $wp_version, "2.9", "<") )
     exit ( $exit_message );
 
-/* Add our function to the widgets_init hook. */
-add_action( 'widgets_init', 'load_bnsft_widget' );
-
-/* Function that registers our widget. */
-function load_bnsft_widget() {
-        register_widget( 'BNS_Featured_Tag_Widget' );
-}
+/* BNS Featured Tag TextDomain
+ * Make plugin text available for translation (i18n)
+ *
+ * @package: BNS Featured Tag
+ * @since: 1.9      October 31, 2011
+ *
+ * Note: Translation files are expected to be found in the plugin root folder / directory.
+ * `bns-ft` is being used in place of `bns-featured-tag`
+ */
+load_plugin_textdomain( 'bns-ft' );
+// End: BNS Featured Tag TextDomain
 
 // Begin the mess of Excerpt Length fiascoes
 function bnsft_first_words( $text, $length = 55 ) {
@@ -64,26 +68,33 @@ function bnsft_first_words( $text, $length = 55 ) {
         }
 
         // Add link to end of custom length "excerpt" output
-        $bnsft_link = ' <strong><a class="bnsft-link" href="' . get_permalink() . '" rel="bookmark" title="' . _e( 'Permanent Link to' ) . ' ' . the_title_attribute() . '">&infin;</a></strong>';
+        $bnsft_link = ' <strong><a class="bnsft-link" href="' . get_permalink() . '" rel="bookmark" title="' . _e( 'Permanent Link to', 'bns-ft' ) . ' ' . the_title_attribute() . '">&infin;</a></strong>';
         $text .= $bnsft_link;
 
         return $text;
 }
 // End Excerpt Length
 
-// Add BNS Inline Asides scripts
+/** Enqueue Plugin Scripts and Styles */
 function BNSFT_Scripts_and_Styles() {
-        /* Enqueue Scripts */
-        /* Enqueue Style Sheets */
+        /** Enqueue Scripts */
+        /** Enqueue Style Sheets */
         wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . '/bnsft-style.css', array(), '1.9', 'screen' );
 }
 add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
 
+/* Add our function to the widgets_init hook. */
+add_action( 'widgets_init', 'load_bnsft_widget' );
+
+/* Function that registers our widget. */
+function load_bnsft_widget() {
+        register_widget( 'BNS_Featured_Tag_Widget' );
+}
 
 class BNS_Featured_Tag_Widget extends WP_Widget {
         function BNS_Featured_Tag_Widget() {
                 /* Widget settings. */
-                $widget_ops = array( 'classname' => 'bns-featured-tag', 'description' => __( 'Displays most recent posts from a specific featured tag or tags.' ) );
+                $widget_ops = array( 'classname' => 'bns-featured-tag', 'description' => __( 'Displays most recent posts from a specific featured tag or tags.', 'bns-ft' ) );
 
                 /* Widget control settings. */
                 $control_ops = array( 'width' => 200, 'id_base' => 'bns-featured-tag' );
@@ -138,19 +149,19 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                             break;
                         } else { ?>
                             <div <?php post_class(); ?>>
-                                <strong><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to' ); ?> <?php the_title_attribute(); ?>"><?php the_title(); ?></a></strong>
+                                <strong><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_title(); ?></a></strong>
                                 <div class="post-details">
                                     <?php if ( $show_meta ) {
-                                        printf( __( 'by %1$s on %2$s' ), get_the_author(), get_the_time( get_option( 'date_format' ) ) ); ?><br />
+                                        printf( __( 'by %1$s on %2$s', 'bns-ft' ), get_the_author(), get_the_time( get_option( 'date_format' ) ) ); ?><br />
                                     <?php }
                                     if ( ( $show_comments ) && ( ! post_password_required() ) ) {
-                                        comments_popup_link( __( 'with No Comments' ), __( 'with 1 Comment' ), __( 'with % Comments' ), '', __( 'with Comments Closed' ) ); ?><br />
+                                        comments_popup_link( __( 'with No Comments', 'bns-ft' ), __( 'with 1 Comment', 'bns-ft' ), __( 'with % Comments', 'bns-ft' ), '', __( 'with Comments Closed', 'bns-ft' ) ); ?><br />
                                     <?php }
                                     if ( $show_cats ) {
-                                        printf( __( 'in %s' ), get_the_category_list( ', ' ) ); ?><br />
+                                        printf( __( 'in %s', 'bns-ft' ), get_the_category_list( ', ' ) ); ?><br />
                                     <?php }
                                     if ( $show_tags ) {
-                                        the_tags( __( 'as ' ), ', ', '' ); ?><br />
+                                        the_tags( __( 'as ', 'bns-ft' ), ', ', '' ); ?><br />
                                     <?php } ?>
                                 </div> <!-- .post-details -->
                                 <?php if ( !$only_titles ) { ?>
@@ -173,7 +184,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                         }
                      endwhile;
                 else :
-                    _e( 'Yes, we have no bananas, or posts, today.' );
+                    _e( 'Yes, we have no bananas, or posts, today.', 'bns-ft' );
                 endif;
 
                 /** @var $after_widget TYPE_NAME */
@@ -207,7 +218,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         function form( $instance ) {
                 /* Set up some default widget settings. */
                 $defaults = array(
-                    'title'             => __( 'Featured Tag' ),
+                    'title'             => __( 'Featured Tag', 'bns-ft' ),
                     'tag_choice'        => '',
                     'count'             => '0', /* resets count to zero as default */
                     'show_count'        => '3',
@@ -228,38 +239,38 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 ?>
 
                 <p>
-                    <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'bns-ft' ); ?></label>
                     <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
                 </p>
 
                 <p>
-                    <label for="<?php echo $this->get_field_id( 'tag_choice' ); ?>"><?php _e( 'Tag Names, separated by commas:' ); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'tag_choice' ); ?>"><?php _e( 'Tag Names, separated by commas:', 'bns-ft' ); ?></label>
                     <input class="widefat" id="<?php echo $this->get_field_id( 'tag_choice' ); ?>" name="<?php echo $this->get_field_name( 'tag_choice' ); ?>" value="<?php echo $instance['tag_choice']; ?>" />
                 </p>
 
                 <p>
                     <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['show_tag_desc'], true ); ?> id="<?php echo $this->get_field_id( 'show_tag_desc' ); ?>" name="<?php echo $this->get_field_name( 'show_tag_desc' ); ?>" />
-                    <label for="<?php echo $this->get_field_id( 'show_tag_desc' ); ?>"><?php _e( 'Show first Tag choice description?' ); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'show_tag_desc' ); ?>"><?php _e( 'Show first Tag choice description?', 'bns-ft' ); ?></label>
                 </p>
 
                 <p>
                     <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['use_thumbnails'], true ); ?> id="<?php echo $this->get_field_id( 'use_thumbnails' ); ?>" name="<?php echo $this->get_field_name( 'use_thumbnails' ); ?>" />
-                    <label for="<?php echo $this->get_field_id( 'use_thumbnails' ); ?>"><?php _e('Use Featured Image / Post Thumbnails?'); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'use_thumbnails' ); ?>"><?php _e( 'Use Featured Image / Post Thumbnails?', 'bns-ft' ); ?></label>
                 </p>
 
                 <p>
-                    <label for="<?php echo $this->get_field_id( 'content_thumb' ); ?>"><?php _e('Content Thumbnail Size (in px):'); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'content_thumb' ); ?>"><?php _e( 'Content Thumbnail Size (in px):', 'bns-ft' ); ?></label>
                     <input class="widefat" id="<?php echo $this->get_field_id( 'content_thumb' ); ?>" name="<?php echo $this->get_field_name( 'content_thumb' ); ?>" value="<?php echo $instance['content_thumb']; ?>" />
 
                 </p>
 
                 <p>
-                    <label for="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>"><?php _e('Excerpt Thumbnail Size (in px):'); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>"><?php _e( 'Excerpt Thumbnail Size (in px):', 'bns-ft' ); ?></label>
                     <input class="widefat" id="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_thumb' ); ?>" value="<?php echo $instance['excerpt_thumb']; ?>" />
                 </p>
 
                 <p>
-                    <label for="<?php echo $this->get_field_id( 'show_count' ); ?>"><?php _e( 'Total Posts to Display:' ); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'show_count' ); ?>"><?php _e( 'Total Posts to Display:', 'bns-ft' ); ?></label>
                     <input class="widefat" id="<?php echo $this->get_field_id( 'show_count' ); ?>" name="<?php echo $this->get_field_name( 'show_count' ); ?>" value="<?php echo $instance['show_count']; ?>" />
                 </p>
 
@@ -268,13 +279,13 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                         <td>
                             <p>
                                 <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_meta'], true ); ?> id="<?php echo $this->get_field_id( 'show_meta' ); ?>" name="<?php echo $this->get_field_name( 'show_meta' ); ?>" />
-                                <label for="<?php echo $this->get_field_id( 'show_meta' ); ?>"><?php _e( 'Display Author Meta Details?' ); ?></label>
+                                <label for="<?php echo $this->get_field_id( 'show_meta' ); ?>"><?php _e( 'Display Author Meta Details?', 'bns-ft' ); ?></label>
                             </p>
                         </td>
                         <td>
                             <p>
                                 <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_comments'], true ); ?> id="<?php echo $this->get_field_id( 'show_comments' ); ?>" name="<?php echo $this->get_field_name( 'show_comments' ); ?>" />
-                                <label for="<?php echo $this->get_field_id( 'show_comments' ); ?>"><?php _e( 'Display Comment Totals?' ); ?></label>
+                                <label for="<?php echo $this->get_field_id( 'show_comments' ); ?>"><?php _e( 'Display Comment Totals?', 'bns-ft' ); ?></label>
                             </p>
                         </td>
                     </tr>
@@ -282,34 +293,34 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                         <td>
                             <p>
                                 <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_cats'], true ); ?> id="<?php echo $this->get_field_id( 'show_cats' ); ?>" name="<?php echo $this->get_field_name( 'show_cats' ); ?>" />
-                                <label for="<?php echo $this->get_field_id( 'show_cats' ); ?>"><?php _e( 'Display the Post Categories?' ); ?></label>
+                                <label for="<?php echo $this->get_field_id( 'show_cats' ); ?>"><?php _e( 'Display the Post Categories?', 'bns-ft' ); ?></label>
                             </p>
                         </td>
                         <td>
                             <p>
                                 <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_tags'], true ); ?> id="<?php echo $this->get_field_id( 'show_tags' ); ?>" name="<?php echo $this->get_field_name( 'show_tags' ); ?>" />
-                                <label for="<?php echo $this->get_field_id( 'show_tags' ); ?>"><?php _e( 'Display the Post Tags?' ); ?></label>
+                                <label for="<?php echo $this->get_field_id( 'show_tags' ); ?>"><?php _e( 'Display the Post Tags?', 'bns-ft' ); ?></label>
                             </p>
                         </td>
                     </tr>
                 </table>
 
                 <hr /> <!-- separates meta details display from content/excerpt display options -->
-                <p>The excerpt is shown by default; or, the first 55 words if it does not exist.</p>
+                <p><?php _e( 'The excerpt is shown by default; or, the first 55 words if it does not exist.', 'bns-ft' ); ?></p>
 
                 <p>
-                    <label for="<?php echo $this->get_field_id( 'excerpt_length' ); ?>"><?php _e( 'Set your word count if you want more or less than 55.' ); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'excerpt_length' ); ?>"><?php _e( 'Set your word count if you want more or less than 55.', 'bns-ft' ); ?></label>
                     <input class="widefat" id="<?php echo $this->get_field_id( 'excerpt_length' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_length' ); ?>" value="<?php echo $instance['excerpt_length']; ?>" />
                 </p>
 
                 <p>
                     <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['only_titles'], true ); ?> id="<?php echo $this->get_field_id( 'only_titles' ); ?>" name="<?php echo $this->get_field_name( 'only_titles' ); ?>" />
-                    <label for="<?php echo $this->get_field_id( 'show_full' ); ?>"><?php _e( 'Display only post Titles?' ); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'show_full' ); ?>"><?php _e( 'Display only post Titles?', 'bns-ft' ); ?></label>
                 </p>
 
                 <p>
                     <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_full'], true ); ?> id="<?php echo $this->get_field_id( 'show_full' ); ?>" name="<?php echo $this->get_field_name( 'show_full' ); ?>" />
-                    <label for="<?php echo $this->get_field_id( 'show_full' ); ?>"><?php _e( 'Display entire post?' ); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'show_full' ); ?>"><?php _e( 'Display entire post?', 'bns-ft' ); ?></label>
                 </p>
         <?php }
 }
@@ -321,7 +332,7 @@ function bnsft_shortcode( $atts ) {
         the_widget(
                 'BNS_Featured_Tag_Widget',
                 $instance = shortcode_atts( array(
-                                                'title'			      => __( 'Featured Tag' ),
+                                                'title'			      => __( 'Featured Tag', 'bns-ft' ),
                                                 'tag_choice'		  => '',
                                                 'count'			      => '0', /* resets count to zero as default */
                                                 'show_count'		  => '3',

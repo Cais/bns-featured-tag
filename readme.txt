@@ -116,14 +116,15 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 1.9 =
 * release ...
+* confirmed compatible with WordPress 3.3
 * added link to end of excerpt style formats
 * add stylesheet to manage `bnsft-link` element
-* confirmed compatible with WordPress 3.3
 * minor code clean-up and organization
+* add i18n support using `bns-ft` textdomain
 
 = 1.8.5 =
 * released June 2011
-* updated additional items in readme.txt (thsi file)
+* updated additional items in readme.txt (this file)
 * re-sized options panel
 * re-arranged options panel for better UX / UI in new size
 * updated screenshot
@@ -171,7 +172,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * updated license declaration
 
 = 1.6.2.2 =
-* clarified the plugin's release under a GPL license
+* clarified the plugin is released under a GPLv2 license
 
 = 1.6.2.1 =
 * compatibility check for 2.9.1 completed
@@ -181,7 +182,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * matched version number to BNS Featured Category - future versions should also stay in step
 
 = 1.6 =
-* corrected issue with checkboxes not displaying their state correctly
+* corrected issue with checkbox not displaying its state correctly
 * minor correction to variable structure to allow for multiple instances of the plugin with independent post counts
 * added option to display the description for the (first) tag choice as taken directly from the Tags panel under Posts in the Dashboard
 * wrapped Tag Description in its own class: 'bnsfc-tag-desc'
