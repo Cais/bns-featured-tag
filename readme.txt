@@ -119,6 +119,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * confirmed compatible with WordPress 3.3
 * added link to end of excerpt style formats
 * add stylesheet to manage `bnsft-link` element
+* fix 'only_titles' form issue
 * minor code clean-up and organization
 * add i18n support using `bns-ft` textdomain
 

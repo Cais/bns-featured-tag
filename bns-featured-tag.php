@@ -315,7 +315,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
                 <p>
                     <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['only_titles'], true ); ?> id="<?php echo $this->get_field_id( 'only_titles' ); ?>" name="<?php echo $this->get_field_name( 'only_titles' ); ?>" />
-                    <label for="<?php echo $this->get_field_id( 'show_full' ); ?>"><?php _e( 'Display only post Titles?', 'bns-ft' ); ?></label>
+                    <label for="<?php echo $this->get_field_id( 'only_titles' ); ?>"><?php _e( 'Display only post Titles?', 'bns-ft' ); ?></label>
                 </p>
 
                 <p>
