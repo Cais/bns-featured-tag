@@ -332,28 +332,28 @@ function bnsft_shortcode( $atts ) {
         the_widget(
                 'BNS_Featured_Tag_Widget',
                 $instance = shortcode_atts( array(
-                                                'title'			      => __( 'Featured Tag', 'bns-ft' ),
-                                                'tag_choice'		  => '',
-                                                'count'			      => '0', /* resets count to zero as default */
-                                                'show_count'		  => '3',
-                                                'use_thumbnails'	=> true,
-                                                // 'content_thumb'		=> '100',
-                                                'excerpt_thumb'		=> '50',
-                                                'show_tag_desc'		=> false,
-                                                'show_meta'       => false,
-                                                'show_comments'		=> false,
-                                                'show_cats'       => false,
-                                                'show_tags'       => false,
-                                                'only_titles'     => false,
-                                                // 'show_full'			=> false,
-                                                'excerpt_length'	=> ''
+                                                'title'             => __( 'Featured Tag', 'bns-ft' ),
+                                                'tag_choice'        => '',
+                                                'count'             => '0', /* resets count to zero as default */
+                                                'show_count'        => '3',
+                                                'use_thumbnails'    => true,
+                                                // 'content_thumb'  => '100',
+                                                'excerpt_thumb'     => '50',
+                                                'show_tag_desc'     => false,
+                                                'show_meta'         => false,
+                                                'show_comments'     => false,
+                                                'show_cats'         => false,
+                                                'show_tags'         => false,
+                                                'only_titles'       => false,
+                                                // 'show_full'      => false,
+                                                'excerpt_length'    => ''
                                             ), $atts),
                 $args = array(
                             /** clear variables defined by theme for widgets */
-                            $before_widget = '',
-                            $after_widget = '',
-                            $before_title = '',
-                            $after_title = '',
+                            $before_widget  = '',
+                            $after_widget   = '',
+                            $before_title   = '',
+                            $after_title    = '',
                 ) );
         $bnsft_content = ob_get_contents(); /* Get the_widget output and put into its own container */
         ob_end_clean(); /* All your snipes belong to us! */
