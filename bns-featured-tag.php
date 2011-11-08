@@ -157,7 +157,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 $only_titles    = $instance['only_titles'];
                 $show_full      = $instance['show_full'];
                 $excerpt_length = $instance['excerpt_length'];
-                $count          = $instance['count']; /* Plugin requires counter variable to be part of its arguments?! */
+                /** Plugin requires counter variable to be part of its arguments?! */
+                $count          = $instance['count'];
 
                 /** @var    $before_widget  string - defined by theme */
                 echo $before_widget;
@@ -207,9 +208,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                                                 the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) );
                                             }
                                             the_content();
-                                        } else if ( isset( $instance['excerpt_length']) && $instance['excerpt_length'] > 0 ) {
+                                        } else if ( isset( $instance['excerpt_length'] ) && ( $instance['excerpt_length'] > 0 ) ) {
                                             if ( has_post_thumbnail() && ( $use_thumbnails ) ) {
-                                                the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ) , array( 'class' => 'alignleft' ) );
+                                                the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ), array( 'class' => 'alignleft' ) );
                                             }
                                             echo bnsft_first_words( get_the_content(), $instance['excerpt_length'] );
                                         } ?>
