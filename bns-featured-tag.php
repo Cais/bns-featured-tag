@@ -10,28 +10,44 @@ License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-/* Last revised November 8, 2011 v1.9 */
-
-/*  Copyright 2009-2011  Edward Caissie  (email : edward.caissie@gmail.com)
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 2,
-    as published by the Free Software Foundation.
-
-    You may NOT assume that you can use any other version of the GPL.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    The license for this software can also likely be found here:
-    http://www.gnu.org/licenses/gpl-2.0.html
-*/
+/**
+ * BNS Featured Tag WordPress plugin
+ *
+ * Plugin with multi-widget functionality that displays most recent posts from
+ * specific tag or tags (set with user options). Also includes user options to
+ * display: Tag Description; Author and meta details; comment totals; post
+ * categories; post tags; and either full post or excerpt (or any combination).
+ *
+ * @package     BNS_Featured_Tag
+ * @link        http://buynowshop.com/plugins/bns-featured-tag/
+ * @link        https://github.com/Cais/bns-featured-tag/
+ * @link        http://wordpress.org/extend/plugins/bns-featured-tag/
+ * @version     1.9
+ * @author      Edward Caissie <edward.caissie@gmail.com>
+ * @copyright   Copyright (c) 2009-2011, Edward Caissie
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License version 2, as published by the
+ * Free Software Foundation.
+ *
+ * You may NOT assume that you can use any other version of the GPL.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to:
+ *
+ *      Free Software Foundation, Inc.
+ *      51 Franklin St, Fifth Floor
+ *      Boston, MA  02110-1301  USA
+ *
+ * The license for this software can also likely be found here:
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * Last revised November 8, 2011
+ */
 
 /** Check if current WordPress version meets the plugin requirements */
 global $wp_version;
@@ -43,15 +59,28 @@ if ( version_compare( $wp_version, "2.9", "<") )
  * BNS Featured Tag TextDomain
  * Make plugin text available for translation (i18n)
  *
- * @package:    BNS Featured Tag
- * @since:      1.9      October 31, 2011
+ * @package BNS Featured Tag
+ * @since   1.9
  *
  * Note: Translation files are expected to be found in the plugin root folder / directory.
  * `bns-ft` is being used in place of `bns-featured-tag`
+ *
+ * Last revised October 31, 2011
  */
 load_plugin_textdomain( 'bns-ft' );
 // End: BNS Featured Tag TextDomain
 
+/**
+ * BNS Featured Tag Custom Excerpt
+ *
+ * @package BNS_Featured_Tag
+ * @since   1.9
+ *
+ * @param   $text
+ * @param   int $length
+ *
+ * @return  string
+ */
 // Begin the mess of Excerpt Length fiascoes
 function bnsft_first_words( $text, $length = 55 ) {
         if ( !$length )
@@ -75,9 +104,14 @@ function bnsft_first_words( $text, $length = 55 ) {
 
         return $text;
 }
-// End Excerpt Length
+// End BNS Featured Tag Custom Excerpt
 
-/** Enqueue Plugin Scripts and Styles */
+/**
+ * Enqueue Plugin Scripts and Styles
+ *
+ * @package BNS_Featured_Tag
+ * @since   1.9
+ */
 function BNSFT_Scripts_and_Styles() {
         /** Enqueue Scripts */
         /** Enqueue Style Sheets */
@@ -85,13 +119,13 @@ function BNSFT_Scripts_and_Styles() {
 }
 add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
 
-/** Add our function to the widgets_init hook. */
-add_action( 'widgets_init', 'load_bnsft_widget' );
-
 /** Function that registers our widget. */
 function load_bnsft_widget() {
         register_widget( 'BNS_Featured_Tag_Widget' );
 }
+
+/** Add load_bnsft_widget function to the widgets_init hook */
+add_action( 'widgets_init', 'load_bnsft_widget' );
 
 class BNS_Featured_Tag_Widget extends WP_Widget {
         function BNS_Featured_Tag_Widget() {
@@ -125,13 +159,13 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 $excerpt_length = $instance['excerpt_length'];
                 $count          = $instance['count']; /* Plugin requires counter variable to be part of its arguments?! */
 
-                /** @var    $before_widget  string defined by theme */
+                /** @var    $before_widget  string - defined by theme */
                 echo $before_widget;
 
                 /** Widget $title $before_widget and $after_widget defined by theme */
                 if ( $title )
-                    /** @var    $before_title   string */
-                    /** @var    $after_title    string */
+                    /** @var    $before_title   string - defined by theme */
+                    /** @var    $after_title    string - defined by theme */
                     echo $before_title . $title . $after_title;
 
                 /** Display posts from widget settings */
@@ -189,7 +223,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                     _e( 'Yes, we have no bananas, or posts, today.', 'bns-ft' );
                 endif;
 
-                /** @var    $after_widget   string */
+                /** @var    $after_widget   string - defined by theme */
                 echo $after_widget;
                 wp_reset_query();
         }
@@ -329,7 +363,12 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 }
 // End class BNS_Featured_Tag_Widget
 
-/** BNSFT Shortcode Start - May the Gods of programming protect us all! */
+/** BNSFT Shortcode Start - May the Gods of programming protect us all!
+ *
+ * @param $atts
+ *
+ * @return ob_get_contents
+ */
 function bnsft_shortcode( $atts ) {
         /** Get ready to capture the elusive widget output */
         ob_start();

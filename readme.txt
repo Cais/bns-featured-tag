@@ -123,6 +123,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * minor code clean-up and organization
 * add i18n support using `bns-ft` textdomain
 * documentation clean-up
+* start phpDoc implementation
 
 = 1.8.5 =
 * released June 2011
