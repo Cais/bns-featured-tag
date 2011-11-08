@@ -10,7 +10,7 @@ License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-/* Last revised October 31, 2011 v1.9 */
+/* Last revised November 8, 2011 v1.9 */
 
 /*  Copyright 2009-2011  Edward Caissie  (email : edward.caissie@gmail.com)
 
@@ -33,16 +33,18 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
     http://www.gnu.org/licenses/gpl-2.0.html
 */
 
+/** Check if current WordPress version meets the plugin requirements */
 global $wp_version;
-$exit_message = 'BNS Featured Tag requires WordPress version 2.8 or newer. <a href="http://codex.wordpress.orgUpgrading_WordPress">Please Update!</a>';
+$exit_message = 'BNS Featured Tag requires WordPress version 2.9 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>';
 if ( version_compare( $wp_version, "2.9", "<") )
     exit ( $exit_message );
 
-/* BNS Featured Tag TextDomain
+/**
+ * BNS Featured Tag TextDomain
  * Make plugin text available for translation (i18n)
  *
- * @package: BNS Featured Tag
- * @since: 1.9      October 31, 2011
+ * @package:    BNS Featured Tag
+ * @since:      1.9      October 31, 2011
  *
  * Note: Translation files are expected to be found in the plugin root folder / directory.
  * `bns-ft` is being used in place of `bns-featured-tag`
@@ -83,30 +85,30 @@ function BNSFT_Scripts_and_Styles() {
 }
 add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
 
-/* Add our function to the widgets_init hook. */
+/** Add our function to the widgets_init hook. */
 add_action( 'widgets_init', 'load_bnsft_widget' );
 
-/* Function that registers our widget. */
+/** Function that registers our widget. */
 function load_bnsft_widget() {
         register_widget( 'BNS_Featured_Tag_Widget' );
 }
 
 class BNS_Featured_Tag_Widget extends WP_Widget {
         function BNS_Featured_Tag_Widget() {
-                /* Widget settings. */
+                /** Widget settings */
                 $widget_ops = array( 'classname' => 'bns-featured-tag', 'description' => __( 'Displays most recent posts from a specific featured tag or tags.', 'bns-ft' ) );
 
-                /* Widget control settings. */
+                /** Widget control settings */
                 $control_ops = array( 'width' => 200, 'id_base' => 'bns-featured-tag' );
 
-                /* Create the widget. */
+                /** Create the widget */
                 $this->WP_Widget( 'bns-featured-tag', 'BNS Featured Tag', $widget_ops, $control_ops );
         }
 
         function widget( $args, $instance ) {
                 extract( $args );
 
-                /* User-selected settings. */
+                /** User-selected settings */
                 $title          = apply_filters( 'widget_title', $instance['title'] );
                 $tag_choice     = $instance['tag_choice'];
                 $show_count     = $instance['show_count'];
@@ -123,20 +125,20 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 $excerpt_length = $instance['excerpt_length'];
                 $count          = $instance['count']; /* Plugin requires counter variable to be part of its arguments?! */
 
-                /** @var $before_widget TYPE_NAME defined by theme */
+                /** @var    $before_widget  string defined by theme */
                 echo $before_widget;
 
                 /** Widget $title $before_widget and $after_widget defined by theme */
                 if ( $title )
-                    /** @var $before_title TYPE_NAME */
-                    /** @var $after_title TYPE_NAME */
+                    /** @var    $before_title   string */
+                    /** @var    $after_title    string */
                     echo $before_title . $title . $after_title;
 
-                /* Display posts from widget settings. */
-                /* Replace spaces with hyphens to create tag slugs from the name */
+                /** Display posts from widget settings */
+                /** Replace spaces with hyphens to create tag slugs from the name */
                 $tag_choice = str_replace( ' ', '-', $tag_choice );
 
-                /* Remove leading hyphens from tag slugs if multiple tag names are entered with leading spaces */
+                /** Remove leading hyphens from tag slugs if multiple tag names are entered with leading spaces */
                 $tag_choice = str_replace( ',-', ', ', $tag_choice );
 
                 query_posts( "tag=$tag_choice&posts_per_page=$show_count" );
@@ -144,7 +146,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                     echo '<div class="bnsft-tag-desc">' . tag_description() . '</div>';
                 }
                 if ( have_posts()) : while ( have_posts() ) : the_post();
-                        /* static $count = 0; */ /* see above */
+                        // static $count = 0; /* see above */
                         if ($count == $show_count) {
                             break;
                         } else { ?>
@@ -187,7 +189,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                     _e( 'Yes, we have no bananas, or posts, today.', 'bns-ft' );
                 endif;
 
-                /** @var $after_widget TYPE_NAME */
+                /** @var    $after_widget   string */
                 echo $after_widget;
                 wp_reset_query();
         }
@@ -195,7 +197,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         function update( $new_instance, $old_instance ) {
                 $instance = $old_instance;
 
-                /* Strip tags (if needed) and update the widget settings. */
+                /** Strip tags (if needed) and update the widget settings */
                 $instance['title']          = strip_tags( $new_instance['title'] );
                 $instance['tag_choice']	  	= strip_tags( $new_instance['tag_choice'] );
                 $instance['show_count']     = $new_instance['show_count'];
@@ -210,17 +212,18 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 $instance['only_titles']  	= $new_instance['only_titles'];
                 $instance['show_full']      = $new_instance['show_full'];
                 $instance['excerpt_length']	= $new_instance['excerpt_length'];
-                $instance['count']          = $new_instance['count']; /* added to be able to reset count to zero for every instance of the plugin */
+                /** added to be able to reset count to zero for every instance of the plugin */
+                $instance['count']          = $new_instance['count'];
 
                 return $instance;
         }
 
         function form( $instance ) {
-                /* Set up some default widget settings. */
+                /** Set up default widget settings */
                 $defaults = array(
                     'title'             => __( 'Featured Tag', 'bns-ft' ),
                     'tag_choice'        => '',
-                    'count'             => '0', /* resets count to zero as default */
+                    'count'             => '0',
                     'show_count'        => '3',
                     'use_thumbnails'    => true,
                     'content_thumb'     => '100',
@@ -326,15 +329,16 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 }
 // End class BNS_Featured_Tag_Widget
 
-/* BNSFT Shortcode Start - May the Gods of programming protect us all! */
+/** BNSFT Shortcode Start - May the Gods of programming protect us all! */
 function bnsft_shortcode( $atts ) {
-        ob_start(); /* Get ready to capture the elusive widget output */
+        /** Get ready to capture the elusive widget output */
+        ob_start();
         the_widget(
                 'BNS_Featured_Tag_Widget',
                 $instance = shortcode_atts( array(
                                                 'title'             => __( 'Featured Tag', 'bns-ft' ),
                                                 'tag_choice'        => '',
-                                                'count'             => '0', /* resets count to zero as default */
+                                                'count'             => '0',
                                                 'show_count'        => '3',
                                                 'use_thumbnails'    => true,
                                                 // 'content_thumb'  => '100',
@@ -355,12 +359,14 @@ function bnsft_shortcode( $atts ) {
                             $before_title   = '',
                             $after_title    = '',
                 ) );
-        $bnsft_content = ob_get_contents(); /* Get the_widget output and put into its own container */
-        ob_end_clean(); /* All your snipes belong to us! */
+        /** Get the_widget output and put into its own container */
+        $bnsft_content = ob_get_contents();
+        ob_end_clean();
+        // All your snipes belong to us!
 
         return $bnsft_content;
 }
 add_shortcode( 'bnsft', 'bnsft_shortcode' );
-/* BNSFT Shortcode End - Say your prayers ... */
+// BNSFT Shortcode End - Say your prayers ...
 ?>
-<?php // Last revised October 31, 2011 v1.9 ?>
+<?php // Last revised November 8, 2011 v1.9 ?>

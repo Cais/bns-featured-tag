@@ -122,6 +122,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * fix 'only_titles' form issue
 * minor code clean-up and organization
 * add i18n support using `bns-ft` textdomain
+* documentation clean-up
 
 = 1.8.5 =
 * released June 2011
