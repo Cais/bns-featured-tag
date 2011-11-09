@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 1.9 (NOT PUBLISHED)
+Version: 1.9
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 License: GNU General Public License v2
@@ -87,7 +87,7 @@ load_plugin_textdomain( 'bns-ft' );
  * @return  string
  */
 // Begin the mess of Excerpt Length fiascoes
-function bnsft_first_words( $text, $length = 55 ) {
+function bnsft_custom_excerpt( $text, $length = 55 ) {
         $text = strip_tags( $text );
         $words = explode( ' ', $text, $length + 1 );
 
@@ -215,7 +215,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                                             if ( has_post_thumbnail() && ( $use_thumbnails ) ) {
                                                 the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ), array( 'class' => 'alignleft' ) );
                                             }
-                                            echo bnsft_first_words( get_the_content(), $instance['excerpt_length'] );
+                                            echo bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
                                         } else {
                                             the_excerpt();
                                         }?>
