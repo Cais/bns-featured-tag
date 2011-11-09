@@ -46,7 +46,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * The license for this software can also likely be found here:
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Last revised November 8, 2011
+ * Last revised November 9, 2011
  */
 
 /** Check if current WordPress version meets the plugin requirements */
@@ -73,35 +73,36 @@ load_plugin_textdomain( 'bns-ft' );
 /**
  * BNS Featured Tag Custom Excerpt
  *
+ * Strips the post content of tags and returns the entire post content if there
+ * are less than $length words; otherwise the amount of words equal to $length
+ * is returned. In both cases, the returned text is appended with a permalink to
+ * the full post.
+ *
  * @package BNS_Featured_Tag
  * @since   1.9
  *
- * @param   $text
- * @param   int $length
+ * @param   $text - post content
+ * @param   int $length - user defined amount of words
  *
  * @return  string
  */
 // Begin the mess of Excerpt Length fiascoes
 function bnsft_first_words( $text, $length = 55 ) {
-        if ( !$length )
-            return $text;
-
         $text = strip_tags( $text );
         $words = explode( ' ', $text, $length + 1 );
 
-        if ( count( $words ) < $length ) {
+        /** Create link to full post for end of custom length excerpt output */
+        $bnsft_link = ' <strong><a class="bnsft-link" href="' . get_permalink() . '" title="' . the_title_attribute( array( 'before' => __( 'Permalink to: ', 'bns-ft' ), 'after' => '', 'echo' => false ) ) . '">&infin;</a></strong>';
+
+        if ( ( ! $length ) || ( count( $words ) < $length ) ) {
+            $text .= $bnsft_link;
             return $text;
         } else {
-            // if ( count( $words ) > $length ) {
             array_pop( $words );
             array_push( $words, '...' );
             $text = implode( ' ', $words );
         }
-
-        // Add link to end of custom length "excerpt" output
-        $bnsft_link = ' <strong><a class="bnsft-link" href="' . get_permalink() . '" rel="bookmark" title="' . _e( 'Permanent Link to', 'bns-ft' ) . ' ' . the_title_attribute() . '">&infin;</a></strong>';
         $text .= $bnsft_link;
-
         return $text;
 }
 // End BNS Featured Tag Custom Excerpt

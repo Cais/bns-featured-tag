@@ -125,6 +125,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * documentation clean-up
 * start phpDoc implementation
 * add call to `the_excerpt` and wrapped post output in `bnsft-content` CSS element
+* re-wrote `bnsft_first_words` including more documentation
 
 = 1.8.5 =
 * released June 2011
