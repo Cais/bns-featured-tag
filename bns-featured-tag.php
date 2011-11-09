@@ -183,7 +183,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 }
                 if ( have_posts()) : while ( have_posts() ) : the_post();
                         // static $count = 0; /* see above */
-                        if ($count == $show_count) {
+                        if ( $count == $show_count ) {
                             break;
                         } else { ?>
                             <div <?php post_class(); ?>>
@@ -202,7 +202,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                                         the_tags( __( 'as ', 'bns-ft' ), ', ', '' ); ?><br />
                                     <?php } ?>
                                 </div> <!-- .post-details -->
-                                <?php if ( !$only_titles ) { ?>
+                                <?php if ( ! $only_titles ) { ?>
                                     <div class="bnsft-content">
                                         <?php if ( $show_full ) {
                                             if ( has_post_thumbnail() && ( $use_thumbnails ) ) {
@@ -416,4 +416,3 @@ function bnsft_shortcode( $atts ) {
 add_shortcode( 'bnsft', 'bnsft_shortcode' );
 // BNSFT Shortcode End - Say your prayers ...
 ?>
-<?php // Last revised November 8, 2011 v1.9 ?>
