@@ -27,3 +27,4 @@ a.bnsft-link:focus,
 a.bnsft-link:active { font-size: 125%; text-decoration: none; }
 
 .bnsft-content { overflow-x: auto; }
+.bnsft-clear { clear: both; }

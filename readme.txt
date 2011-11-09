@@ -127,6 +127,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * add call to `the_excerpt` and wrapped post output in `bnsft-content` CSS element
 * re-wrote `bnsft_first_words` including more documentation
 * moved CSS for images wider than widget area from inline to 'bnsft-style.css'
+* add clearing CSS element and `wp_link_pages` after `the_content` call
 
 = 1.8.5 =
 * released June 2011
