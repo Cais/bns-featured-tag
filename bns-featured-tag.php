@@ -364,7 +364,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 }
 // End class BNS_Featured_Tag_Widget
 
-/** BNSFT Shortcode Start - May the Gods of programming protect us all!
+/**
+ * BNSFT Shortcode Start
+ * - May the Gods of programming protect us all!
  *
  * @param $atts
  *
