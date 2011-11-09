@@ -202,7 +202,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                                     <?php } ?>
                                 </div> <!-- .post-details -->
                                 <?php if ( !$only_titles ) { ?>
-                                    <div style="overflow-x: auto"> <!-- for images wider than widget area -->
+                                    <div class="bnsft-content" style="overflow-x: auto"> <!-- for images wider than widget area -->
                                         <?php if ( $show_full ) {
                                             if ( has_post_thumbnail() && ( $use_thumbnails ) ) {
                                                 the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) );
@@ -213,8 +213,10 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                                                 the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ), array( 'class' => 'alignleft' ) );
                                             }
                                             echo bnsft_first_words( get_the_content(), $instance['excerpt_length'] );
-                                        } ?>
-                                    </div>
+                                        } else {
+                                            the_excerpt();
+                                        }?>
+                                    </div> <!-- .bnsft-content -->
                                 <?php } ?>
                             </div> <!-- .post #post-ID -->
                         <?php $count++;

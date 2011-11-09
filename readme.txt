@@ -124,6 +124,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * add i18n support using `bns-ft` textdomain
 * documentation clean-up
 * start phpDoc implementation
+* add call to `the_excerpt` and wrapped post output in `bnsft-content` CSS element
 
 = 1.8.5 =
 * released June 2011
