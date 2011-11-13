@@ -117,6 +117,7 @@ function BNSFT_Scripts_and_Styles() {
         /** Enqueue Scripts */
         /** Enqueue Style Sheets */
         wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . '/bnsft-style.css', array(), '1.9', 'screen' );
+        wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . '/bnsft-custom-style.css', array(), '1.9', 'screen' );
 }
 add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
 

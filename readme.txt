@@ -80,9 +80,12 @@ The plugin uses several "common" WordPress functions that create standard class 
 * the plugin class `post-details` wraps the general meta details of the post, such as the Author, Categories, Tags, etc.
 * the overall plugin may also be wrapped in a widget "container" class, or id, specific to the theme itself such as (but not limited to): widget, sidebar, left, right, etc.
 
-With the addition of the display Tag Description option an additional class was written into the plugin. To style the tag description displayed add the class 'bnsft-tag-desc' to your style.css file then use your choice of properties to style the text, for example:
-`.bnsft-tag-desc {font-style: italic;}`
-
+As of version 1.9, you may create a custom stylesheet using the name `bnsft-custom-style.css`; and save it to the BNS Featured Tag plugin folder.
+Elements you add into this file will not be overwritten with future plugin updates. With the addition of the display Tag Description option an additional class was written into the plugin.
+To style the category description displayed add the class 'bnsft-tag-desc' to your bnsft-custom-style.css file then use your choice of properties to style the text, for example:
+`
+.bnsft-tag-desc {font-style: italic;}
+`
 = Can I increase the maximum posts to display? =
 As of version 1.6.2 the Total Posts to Display is independent of the "posts per page" setting as set under Settings | Reading.
 
@@ -115,19 +118,20 @@ Please stay current with your WordPress installation, your active theme, and you
 
 == Changelog ==
 = 1.9 =
-* released ...
+* released November 2011
 * confirmed compatible with WordPress 3.3
-* start phpDoc implementation
-* changed `bnsft_first_words` to `bnsft_custom_excerpt`
+* added PHPDoc style documentation
 * added functionality to BNS Featured Tag Custom Excerpt function - see `bnsft_custom_excerpt`
 * added stylesheet to manage plugin specific CSS elements
+* added support for bnsft-custom-style.css stylesheet (will not be over-written with updates)
 * added i18n support using `bns-ft` textdomain
 * added call to `the_excerpt` and wrapped post output in `bnsft-content` CSS element
 * added clearing CSS element and `wp_link_pages` after `the_content` call
-* moved CSS for images wider than widget area from inline to 'bnsft-style.css'
+* changed `bnsft_first_words` to `bnsft_custom_excerpt`
+* cleaned up code organization and optimization
+* cleaned up documentation
 * fixed 'only_titles' form issue
-* clean-up: code organization and optimization
-* clean-up: documentation
+* moved CSS for images wider than widget area from inline to 'bnsft-style.css'
 
 = 1.8.5 =
 * released June 2011
