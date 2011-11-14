@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 1.9
+Version: 1.9.1
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 License: GNU General Public License v2
@@ -116,8 +116,8 @@ function bnsft_custom_excerpt( $text, $length = 55 ) {
 function BNSFT_Scripts_and_Styles() {
         /** Enqueue Scripts */
         /** Enqueue Style Sheets */
-        wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . '/bnsft-style.css', array(), '1.9', 'screen' );
-        wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . '/bnsft-custom-style.css', array(), '1.9', 'screen' );
+        wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), '1.9', 'screen' );
+        wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), '1.9', 'screen' );
 }
 add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
 
