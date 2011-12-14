@@ -112,10 +112,14 @@ function bnsft_custom_excerpt( $text, $length = 55 ) {
  *
  * @package BNS_Featured_Tag
  * @since   1.9
+ *
+ * Last revised December 14, 2011
+ * @version 1.9.1
+ * Fixed 404 error when 'bnsft-custom-style.css' is not available
  */
 function BNSFT_Scripts_and_Styles() {
         /** Enqueue Scripts */
-        /** Enqueue Style Sheets */
+        /** Enqueue Styles */
         wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), '1.9.1', 'screen' );
         if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-custom-style.css' ) ) {
             wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), '1.9.1', 'screen' );

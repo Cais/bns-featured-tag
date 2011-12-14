@@ -129,7 +129,8 @@ Please stay current with your WordPress installation, your active theme, and you
 
 == Changelog ==
 = 1.9.1 =
-* removed extra slash in `wp_enqueue_scripts` parameters
+* Removed extra slash in `wp_enqueue_scripts` parameters
+* Fixed 404 error when 'bnsft-custom-style.css' is not available
 
 = 1.9 =
 * released November 2011
