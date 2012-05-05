@@ -130,6 +130,7 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 1.9.2 =
 * confirmed compatible with WordPress 3.4
+* fixed issue with featured image post thumbnails not showing
 
 = 1.9.1 =
 * Removed extra slash in `wp_enqueue_scripts` parameters

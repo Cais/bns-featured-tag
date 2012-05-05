@@ -46,7 +46,11 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * The license for this software can also likely be found here:
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Last revised December 14, 2011
+ * Last revised May 5, 2012
+ * @version 1.9.2
+ * Fixed featured image post thumbnail not showing
+ *
+ * @todo Updates similar to BNS Featured Category - version 2.0 time-line
  */
 
 /** Check if current WordPress version meets the plugin requirements */
@@ -212,20 +216,21 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                                 <?php if ( ! $only_titles ) { ?>
                                     <div class="bnsft-content">
                                         <?php if ( $show_full ) {
-                                            if ( has_post_thumbnail() && ( $use_thumbnails ) ) {
-                                                the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) );
-                                            }
-                                            the_content(); ?>
-                                            <div class="bnsft-clear"></div>
-                                            <?php wp_link_pages( array( 'before' => '<p><strong>' . __( 'Pages: ', 'bns-ft') . '</strong>', 'after' => '</p>', 'next_or_number' => 'number' ) );
-                                        } else if ( isset( $instance['excerpt_length'] ) && ( $instance['excerpt_length'] > 0 ) ) {
-                                            if ( has_post_thumbnail() && ( $use_thumbnails ) ) {
-                                                the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ), array( 'class' => 'alignleft' ) );
-                                            }
-                                            echo bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
-                                        } else {
-                                            the_excerpt();
-                                        }?>
+                                        /** Conditions: Theme supports post-thumbnails -and- there is a post-thumbnail -and- the option to show the post thumbnail is checked */
+                                        if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) )
+                                            the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) );
+                                        the_content(); ?>
+                                        <div class="bnsft-clear"></div>
+                                        <?php wp_link_pages( array( 'before' => '<p><strong>' . __( 'Pages: ', 'bns-ft') . '</strong>', 'after' => '</p>', 'next_or_number' => 'number' ) );
+                                    } elseif ( isset( $instance['excerpt_length']) && $instance['excerpt_length'] > 0 ) {
+                                        if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) )
+                                            the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ) , array( 'class' => 'alignleft' ) );
+                                        echo bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
+                                    } else {
+                                        if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) )
+                                            the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ) , array( 'class' => 'alignleft' ) );
+                                        the_excerpt();
+                                    } ?>
                                     </div> <!-- .bnsft-content -->
                                 <?php } ?>
                             </div> <!-- .post #post-ID -->
