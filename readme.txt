@@ -135,6 +135,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * Documentation and code format updates
 * Add 'no_excerpt' option
 * Linked Featured Image to post
+* Rearrange Widget Options panel
 
 = 1.9.2 =
 * confirmed compatible with WordPress 3.4
