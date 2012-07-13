@@ -48,11 +48,19 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
  * @version 2.0
  * @date    July 13, 2012
+ * Add 'no_excerpt' option
+ * Linked Featured Image to post
  *
  * @todo Updates similar to BNS Featured Category - version 2.0 time-line
  */
 
-/** Check if current WordPress version meets the plugin requirements */
+/**
+ * Check installed WordPress version for compatibility
+ * @internal    Requires WordPress version 2.9
+ * @internal    @uses current_theme_supports
+ * @internal    @uses the_post_thumbnail
+ * @internal    @uses has_post_thumbnail
+ */
 global $wp_version;
 $exit_message = 'BNS Featured Tag requires WordPress version 2.9 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>';
 if ( version_compare( $wp_version, "2.9", "<") )
@@ -176,6 +184,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $only_titles    = $instance['only_titles'];
         $show_full      = $instance['show_full'];
         $excerpt_length = $instance['excerpt_length'];
+        $no_excerpt     = $instance['no_excerpt'];
         /** Plugin requires counter variable to be part of its arguments?! */
         $count          = $instance['count'];
 
@@ -224,19 +233,23 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                         <div class="bnsft-content">
                             <?php if ( $show_full ) {
                             /** Conditions: Theme supports post-thumbnails -and- there is a post-thumbnail -and- the option to show the post thumbnail is checked */
-                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) )
-                                the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) );
-                            the_content(); ?>
+                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
+                                <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
+                            <?php the_content(); ?>
                             <div class="bnsft-clear"></div>
                             <?php wp_link_pages( array( 'before' => '<p><strong>' . __( 'Pages: ', 'bns-ft') . '</strong>', 'after' => '</p>', 'next_or_number' => 'number' ) );
                         } elseif ( isset( $instance['excerpt_length']) && $instance['excerpt_length'] > 0 ) {
-                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) )
-                                the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ) , array( 'class' => 'alignleft' ) );
-                            echo bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
+                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
+                                <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
+                            <?php echo bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
+                        } elseif ( ! $instance['no_excerpt'] ) {
+                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
+                                <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
+                                <?php the_excerpt();
                         } else {
-                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) )
-                                the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ) , array( 'class' => 'alignleft' ) );
-                            the_excerpt();
+                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
+                                <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
+                            <?php the_excerpt();
                         } ?>
                         </div> <!-- .bnsft-content -->
                     <?php } ?>
@@ -270,6 +283,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $instance['only_titles']  	= $new_instance['only_titles'];
         $instance['show_full']      = $new_instance['show_full'];
         $instance['excerpt_length']	= $new_instance['excerpt_length'];
+        $instance['no_excerpt']     = $new_instance['no_excerpt'];
         /** added to be able to reset count to zero for every instance of the plugin */
         $instance['count']          = $new_instance['count'];
 
@@ -293,7 +307,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             'show_tags'         => false,
             'only_titles'       => false,
             'show_full'         => false,
-            'excerpt_length'    => ''
+            'excerpt_length'    => '',
+            'no_excerpt'        => false,
         );
 
         $instance = wp_parse_args( ( array ) $instance, $defaults );
@@ -375,6 +390,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         </p>
 
         <p>
+            <label for="<?php echo $this->get_field_id( 'no_excerpt' ); ?>"><?php _e( '... or have no excerpt at all!', 'bns-ft' ); ?></label>
+            <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['no_excerpt'], true ); ?> id="<?php echo $this->get_field_id( 'no_excerpt' ); ?>" name="<?php echo $this->get_field_name( 'no_excerpt' ); ?>" />
+        </p>
+
+        <p>
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['only_titles'], true ); ?> id="<?php echo $this->get_field_id( 'only_titles' ); ?>" name="<?php echo $this->get_field_name( 'only_titles' ); ?>" />
             <label for="<?php echo $this->get_field_id( 'only_titles' ); ?>"><?php _e( 'Display only post Titles?', 'bns-ft' ); ?></label>
         </p>
@@ -399,6 +419,10 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
  * @uses    the_widget
  *
  * @return  string ob_get_contents
+ *
+ * @version 2.0
+ * @date    July 13, 2012
+ * Add 'no_excerpt' option
  */
 function bnsft_shortcode( $atts ) {
     /** Get ready to capture the elusive widget output */
@@ -411,7 +435,7 @@ function bnsft_shortcode( $atts ) {
             'count'             => '0',
             'show_count'        => '3',
             'use_thumbnails'    => true,
-            'content_thumb'  => '100',
+            'content_thumb'     => '100',
             'excerpt_thumb'     => '50',
             'show_tag_desc'     => false,
             'show_meta'         => false,
@@ -419,8 +443,9 @@ function bnsft_shortcode( $atts ) {
             'show_cats'         => false,
             'show_tags'         => false,
             'only_titles'       => false,
-            'show_full'      => false,
-            'excerpt_length'    => ''
+            'show_full'         => false,
+            'excerpt_length'    => '',
+            'no_excerpt'        => false,
         ), $atts),
         $args = array(
             /** clear variables defined by theme for widgets */

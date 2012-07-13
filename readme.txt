@@ -54,19 +54,20 @@ Reading this article for further assistance: http://wpfirstaid.com/2009/12/plugi
 = Shortcode: bnsft =
  Default Parameters:
 
-*   'title'          => 'Featured Tag'
-*   'tag_choice'     => ''
-*   'count'          => '0'
-*   'show_count'     => '3'
-*   'use_thumbnails' => true
-*   'excerpt_thumb'  => '50'
-*   'show_tag_desc'  => false
-*   'show_meta'      => false
-*   'show_comments'  => false
-*   'show_cats'      => false
-*   'show_tags'      => false
-*   'only_titles'    => false
-*   'excerpt_length' => ''
+*   'title'             => 'Featured Tag'
+*   'tag_choice'        => ''
+*   'count'             => '0'
+*   'show_count'        => '3'
+*   'use_thumbnails'    => true
+*   'excerpt_thumb'     => '50'
+*   'show_tag_desc'     => false
+*   'show_meta'         => false
+*   'show_comments'     => false
+*   'show_cats'         => false
+*   'show_tags'         => false
+*   'only_titles'       => false
+*   'excerpt_length'    => ''
+*   'no_excerpt'        => false
 
 == Frequently Asked Questions ==
 = Where can I get support for this plugin? =
@@ -132,6 +133,8 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 2.0 =
 * Documentation and code format updates
+* Add 'no_excerpt' option
+* Linked Featured Image to post
 
 = 1.9.2 =
 * confirmed compatible with WordPress 3.4
