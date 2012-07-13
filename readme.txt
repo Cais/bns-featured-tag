@@ -4,7 +4,7 @@ Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options
 Requires at least: 2.9
 Tested up to: 3.4
-Stable tag: 1.9.2
+Stable tag: 2.0
 
 Displays most recent posts from a specific featured tag or tags.
 
@@ -128,6 +128,9 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 Please stay current with your WordPress installation, your active theme, and your plugins.
 
 == Changelog ==
+= 2.0 =
+* Documentation and code format updates
+
 = 1.9.2 =
 * confirmed compatible with WordPress 3.4
 * fixed issue with featured image post thumbnails not showing
