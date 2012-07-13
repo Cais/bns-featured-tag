@@ -5,6 +5,8 @@ Tags: posts, tags, featured, multi-widget, user-options
 Requires at least: 2.9
 Tested up to: 3.4
 Stable tag: 2.0
+License: GNU General Public License v2
+License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
 Displays most recent posts from a specific featured tag or tags.
 
@@ -104,7 +106,7 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 1. The options panel (default settings).
 
 == Other Notes ==
-  Copyright 2009-2011  Edward Caissie  (email : edward.caissie@gmail.com)
+  Copyright 2009-2012  Edward Caissie  (email : edward.caissie@gmail.com)
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2,
