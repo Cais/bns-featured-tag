@@ -98,8 +98,9 @@ load_plugin_textdomain( 'bns-ft' );
  * @uses    the_title_attribute
  *
  * @return  string
+ *
+ * @todo Review the possibility of optioning the read-more / permalink symbol - currently uses infinity symbol
  */
-// Begin the mess of Excerpt Length fiascoes
 function bnsft_custom_excerpt( $text, $length = 55 ) {
     $text = strip_tags( $text );
     $words = explode( ' ', $text, $length + 1 );
