@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.0
+Version: 2.1
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 License: GNU General Public License v2
@@ -22,7 +22,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @link        http://buynowshop.com/plugins/bns-featured-tag/
  * @link        https://github.com/Cais/bns-featured-tag/
  * @link        http://wordpress.org/extend/plugins/bns-featured-tag/
- * @version     2.0
+ * @version     2.1
  * @author      Edward Caissie <edward.caissie@gmail.com>
  * @copyright   Copyright (c) 2009-2012, Edward Caissie
  *
@@ -46,11 +46,9 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * The license for this software can also likely be found here:
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * @version 2.0
- * @date    July 13, 2012
- * Add 'no_excerpt' option
- * Linked Featured Image to post
- * Rearrange Widget Options panel
+ * @version 2.1
+ * @date    August 4, 2012
+ * Add 'no_titles' option
  */
 
 /**
@@ -139,9 +137,9 @@ function bnsft_custom_excerpt( $text, $length = 55 ) {
 function BNSFT_Scripts_and_Styles() {
     /** Enqueue Scripts */
     /** Enqueue Styles */
-    wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), '1.9.1', 'screen' );
+    wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), '2.1', 'screen' );
     if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-custom-style.css' ) ) {
-        wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), '1.9.1', 'screen' );
+        wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), '2.1', 'screen' );
     }
 }
 add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
@@ -182,6 +180,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $show_cats      = $instance['show_cats'];
         $show_tags      = $instance['show_tags'];
         $only_titles    = $instance['only_titles'];
+        $no_titles      = $instance['no_titles'];
         $show_full      = $instance['show_full'];
         $excerpt_length = $instance['excerpt_length'];
         $no_excerpt     = $instance['no_excerpt'];
@@ -214,7 +213,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 break;
             } else { ?>
                 <div <?php post_class(); ?>>
-                    <strong><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_title(); ?></a></strong>
+                    <?php if ( ! $no_titles ) { ?>
+                        <strong><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_title(); ?></a></strong>
+                    <?php } ?>
                     <div class="post-details">
                         <?php if ( $show_meta ) {
                             printf( __( 'by %1$s on %2$s', 'bns-ft' ), get_the_author(), get_the_time( get_option( 'date_format' ) ) ); ?><br />
@@ -281,6 +282,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $instance['show_cats']      = $new_instance['show_cats'];
         $instance['show_tags']      = $new_instance['show_tags'];
         $instance['only_titles']  	= $new_instance['only_titles'];
+        $instance['no_titles']      = $new_instance['no_titles'];
         $instance['show_full']      = $new_instance['show_full'];
         $instance['excerpt_length']	= $new_instance['excerpt_length'];
         $instance['no_excerpt']     = $new_instance['no_excerpt'];
@@ -306,6 +308,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             'show_cats'         => false,
             'show_tags'         => false,
             'only_titles'       => false,
+            'no_titles'         => false,
             'show_full'         => false,
             'excerpt_length'    => '',
             'no_excerpt'        => false,
@@ -331,6 +334,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         <hr />
         <p><?php _e( 'NB: Some options may not be available depending on which ones are selected.', 'bns-fc'); ?></p>
+
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['no_titles'], true ); ?> id="<?php echo $this->get_field_id( 'no_titles' ); ?>" name="<?php echo $this->get_field_name( 'no_titles' ); ?>" />
+            <label for="<?php echo $this->get_field_id( 'no_titles' ); ?>"><?php _e( 'Do NOT display Post Titles?', 'bns-ft' ); ?></label>
+        </p>
 
         <p>
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['only_titles'], true ); ?> id="<?php echo $this->get_field_id( 'only_titles' ); ?>" name="<?php echo $this->get_field_name( 'only_titles' ); ?>" />
@@ -419,9 +427,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
  *
  * @return  string ob_get_contents
  *
- * @version 2.0
- * @date    July 13, 2012
- * Add 'no_excerpt' option
+ * @version 2.1
+ * @date    August 4, 2012
+ * Add 'no_titles' option
  */
 function bnsft_shortcode( $atts ) {
     /** Get ready to capture the elusive widget output */
@@ -442,6 +450,7 @@ function bnsft_shortcode( $atts ) {
             'show_cats'         => false,
             'show_tags'         => false,
             'only_titles'       => false,
+            'no_titles'         => false,
             'show_full'         => false,
             'excerpt_length'    => '',
             'no_excerpt'        => false,

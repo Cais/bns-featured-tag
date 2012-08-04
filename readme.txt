@@ -3,8 +3,8 @@ Contributors: cais
 Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options
 Requires at least: 2.9
-Tested up to: 3.4
-Stable tag: 2.0
+Tested up to: 3.4.1
+Stable tag: 2.1
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -66,6 +66,7 @@ Reading this article for further assistance: http://wpfirstaid.com/2009/12/plugi
 *   'show_cats'         => false
 *   'show_tags'         => false
 *   'only_titles'       => false
+*   'no_titles'         => false
 *   'excerpt_length'    => ''
 *   'no_excerpt'        => false
 
@@ -131,6 +132,9 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 Please stay current with your WordPress installation, your active theme, and your plugins.
 
 == Changelog ==
+= 2.1 =
+Add 'no_titles' option
+
 = 2.0 =
 * Documentation and code format updates
 * Add 'no_excerpt' option
