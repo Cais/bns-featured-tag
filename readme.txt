@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: cais
 Donate link: http://buynowshop.com
-Tags: posts, tags, featured, multi-widget, user-options
+Tags: posts, tags, featured, multi-widget, user-options, widget-only
 Requires at least: 2.9
-Tested up to: 3.4.1
+Tested up to: 3.4.2
 Stable tag: 2.1
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
