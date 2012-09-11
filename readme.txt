@@ -133,7 +133,7 @@ Please stay current with your WordPress installation, your active theme, and you
 
 == Changelog ==
 = 2.1 =
-Add 'no_titles' option
+* Add 'no_titles' option
 
 = 2.0 =
 * Documentation and code format updates
