@@ -135,6 +135,7 @@ Please stay current with your WordPress installation, your active theme, and you
 = 2.2 =
 * Release december 2012
 * Add posts offset option
+* Add sort order option
 * Programmatically add version number to enqueue calls
 * Remove load_plugin_textdomain as redundant
 

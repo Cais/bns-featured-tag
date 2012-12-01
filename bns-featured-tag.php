@@ -177,6 +177,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $use_current    = $instance['use_current'];
         $show_count     = $instance['show_count'];
         $offset         = $instance['offset'];
+        $sort_order     = $instance['sort_order'];
         $use_thumbnails = $instance['use_thumbnails'];
         $content_thumb  = $instance['content_thumb'];
         $excerpt_thumb  = $instance['excerpt_thumb'];
@@ -209,9 +210,16 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         /** Remove leading hyphens from tag slugs if multiple tag names are entered with leading spaces */
         $tag_choice = str_replace( ',-', ', ', $tag_choice );
 
-        echo 'tag: ' . $tag_choice . '<br />';
+        /** Check if $sort_order is set to rand (random) and use the `orderby` parameter; otherwise use the `order` parameter */
+        if ( 'rand' == $sort_order ) {
+            $query_args = "tag=$tag_choice&posts_per_page=$show_count&offset=$offset&orderby=$sort_order";
+        } else {
+            $query_args = "tag=$tag_choice&posts_per_page=$show_count&offset=$offset&order=$sort_order";
+        }
 
-        query_posts( "tag=$tag_choice&posts_per_page=$show_count&offset=$offset" );
+        /** todo Review implementing new WP_Query in place of query_posts */
+        query_posts( $query_args );
+
         if ( $show_tag_desc ) {
             echo '<div class="bnsft-tag-desc">' . tag_description() . '</div>';
         }
@@ -283,6 +291,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $instance['use_current']    = $new_instance['use_current'];
         $instance['show_count']     = $new_instance['show_count'];
         $instance['offset']         = $new_instance['offset'];
+        $instance['sort_order']     = $new_instance['sort_order'];
         $instance['use_thumbnails']	= $new_instance['use_thumbnails'];
         $instance['content_thumb']	= $new_instance['content_thumb'];
         $instance['excerpt_thumb']	= $new_instance['excerpt_thumb'];
@@ -311,6 +320,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             'count'             => '0',
             'show_count'        => '3',
             'offset'            => '0',
+            'sort_order'        => 'desc',
             'use_thumbnails'    => true,
             'content_thumb'     => '100',
             'excerpt_thumb'     => '50',
@@ -364,9 +374,24 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                     </p>
                 </td>
             </tr>
+
+            <tr>
+                <td>
+                    <p>
+                        <label for="<?php echo $this->get_field_id( 'sort_order' ); ?>"><?php _e( 'Sort Order:', 'bns-ft' ); ?></label>
+                        <select id="<?php echo $this->get_field_id( 'sort_order' ); ?>" name="<?php echo $this->get_field_name( 'sort_order' ); ?>" class="widefat">
+                            <option <?php selected( 'asc', $instance['sort_order'], true ); ?>>asc</option>
+                            <option <?php selected( 'desc', $instance['sort_order'], true ); ?>>desc</option>
+                            <option <?php selected( 'rand', $instance['sort_order'], true ); ?>>rand</option>
+                        </select>
+                    </p>
+                </td>
+            </tr>
+
         </table>
 
         <hr />
+        <!-- The following option choices may affect the widget option panel layout -->
         <p><?php _e( 'NB: Some options may not be available depending on which ones are selected.', 'bns-fc'); ?></p>
 
         <p>
@@ -464,6 +489,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
  * @version 2.2
  * @date    December 1, 2012
  * Add use current option
+ * Add offset option
+ * Add sort order option
  */
 function bnsft_shortcode( $atts ) {
     /** Get ready to capture the elusive widget output */
@@ -476,6 +503,8 @@ function bnsft_shortcode( $atts ) {
             'use_current'       => '',
             'count'             => '0',
             'show_count'        => '3',
+            'offset'            => '',
+            'sort_order'        => 'DESC',
             'use_thumbnails'    => true,
             'content_thumb'     => '100',
             'excerpt_thumb'     => '50',
