@@ -3,8 +3,8 @@ Contributors: cais
 Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, widget-only
 Requires at least: 2.9
-Tested up to: 3.4.2
-Stable tag: 2.1
+Tested up to: 3.5
+Stable tag: 2.2
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -132,6 +132,11 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 Please stay current with your WordPress installation, your active theme, and your plugins.
 
 == Changelog ==
+= 2.2 =
+* Release december 2012
+* Remove load_plugin_textdomain as redundant
+* Programmatically add version number to enqueue calls
+
 = 2.1 =
 * Add 'no_titles' option
 

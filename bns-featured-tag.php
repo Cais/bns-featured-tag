@@ -3,9 +3,10 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.1
+Version: 2.2
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
+Textdomain: bns-ft
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
@@ -22,7 +23,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @link        http://buynowshop.com/plugins/bns-featured-tag/
  * @link        https://github.com/Cais/bns-featured-tag/
  * @link        http://wordpress.org/extend/plugins/bns-featured-tag/
- * @version     2.1
+ * @version     2.2
  * @author      Edward Caissie <edward.caissie@gmail.com>
  * @copyright   Copyright (c) 2009-2012, Edward Caissie
  *
@@ -49,6 +50,10 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @version 2.1
  * @date    August 4, 2012
  * Add 'no_titles' option
+ *
+ * @version 2.2
+ * @date    December 1, 2012
+ * Remove load_plugin_textdomain as redundant
  */
 
 /**
@@ -62,21 +67,6 @@ global $wp_version;
 $exit_message = 'BNS Featured Tag requires WordPress version 2.9 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>';
 if ( version_compare( $wp_version, "2.9", "<") )
     exit ( $exit_message );
-
-/**
- * BNS Featured Tag TextDomain
- * Make plugin text available for translation (i18n)
- *
- * @package BNS Featured Tag
- * @since   1.9
- *
- * Note: Translation files are expected to be found in the plugin root folder / directory.
- * `bns-ft` is being used in place of `bns-featured-tag`
- *
- * Last revised October 31, 2011
- */
-load_plugin_textdomain( 'bns-ft' );
-// End: BNS Featured Tag TextDomain
 
 /**
  * BNS Featured Tag Custom Excerpt
@@ -124,22 +114,32 @@ function bnsft_custom_excerpt( $text, $length = 55 ) {
  * @package BNS_Featured_Tag
  * @since   1.9
  *
+ * @uses    get_plugin_data
  * @uses    plugin_dir_path
  * @uses    plugin_dir_url
  * @uses    wp_enqueue_style
  *
  * @internal Used with action: wp_enqueue_styles
  *
- * Last revised December 14, 2011
  * @version 1.9.1
+ * @date    December 14, 2011
  * Fixed 404 error when 'bnsft-custom-style.css' is not available
+ *
+ * @version 2.2
+ * @date    December 1, 2012
+ * Programmatically add version number to enqueue calls
  */
 function BNSFT_Scripts_and_Styles() {
+    /** Call the wp-admin plugin code */
+    require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+    /** @var $bnsfc_data - holds the plugin header data */
+    $bnsft_data = get_plugin_data( __FILE__ );
+
     /** Enqueue Scripts */
     /** Enqueue Styles */
-    wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), '2.1', 'screen' );
+    wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), $bnsft_data['Version'], 'screen' );
     if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-custom-style.css' ) ) {
-        wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), '2.1', 'screen' );
+        wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
     }
 }
 add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
