@@ -138,16 +138,16 @@ Please stay current with your WordPress installation, your active theme, and you
 
 == Changelog ==
 = 2.2 =
-* Release december 2012
+* Released December 2012
 * Added filter to full post link element
 * Added filter to allow modification of author and date post meta details
 * Added filter to allow modification of category list post meta details
 * Added "Posts Offset" option
 * Added "Sort Order" option
 * Improved widget option panel UX with jQuery toggles
-* Optimize output buffer closure in shortcode function
-* Programmatically add version number to enqueue calls
-* Remove load_plugin_textdomain as redundant
+* Optimized output buffer closure in shortcode function
+* Programmatically added version number to enqueue calls
+* Removed load_plugin_textdomain as redundant
 
 = 2.1 =
 * Add 'no_titles' option
