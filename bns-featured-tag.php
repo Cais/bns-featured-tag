@@ -54,6 +54,10 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @version 2.2
  * @date    December 1, 2012
  * Remove load_plugin_textdomain as redundant
+ * Add use current tag for single posts option
+ * Add posts offset option
+ *
+ * @todo Finish "use current" option
  */
 
 /**
@@ -170,7 +174,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         /** User-selected settings */
         $title          = apply_filters( 'widget_title', $instance['title'] );
         $tag_choice     = $instance['tag_choice'];
+        $use_current    = $instance['use_current'];
         $show_count     = $instance['show_count'];
+        $offset         = $instance['offset'];
         $use_thumbnails = $instance['use_thumbnails'];
         $content_thumb  = $instance['content_thumb'];
         $excerpt_thumb  = $instance['excerpt_thumb'];
@@ -203,7 +209,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         /** Remove leading hyphens from tag slugs if multiple tag names are entered with leading spaces */
         $tag_choice = str_replace( ',-', ', ', $tag_choice );
 
-        query_posts( "tag=$tag_choice&posts_per_page=$show_count" );
+        echo 'tag: ' . $tag_choice . '<br />';
+
+        query_posts( "tag=$tag_choice&posts_per_page=$show_count&offset=$offset" );
         if ( $show_tag_desc ) {
             echo '<div class="bnsft-tag-desc">' . tag_description() . '</div>';
         }
@@ -272,7 +280,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         /** Strip tags (if needed) and update the widget settings */
         $instance['title']          = strip_tags( $new_instance['title'] );
         $instance['tag_choice']	  	= strip_tags( $new_instance['tag_choice'] );
+        $instance['use_current']    = $new_instance['use_current'];
         $instance['show_count']     = $new_instance['show_count'];
+        $instance['offset']         = $new_instance['offset'];
         $instance['use_thumbnails']	= $new_instance['use_thumbnails'];
         $instance['content_thumb']	= $new_instance['content_thumb'];
         $instance['excerpt_thumb']	= $new_instance['excerpt_thumb'];
@@ -297,8 +307,10 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $defaults = array(
             'title'             => __( 'Featured Tag', 'bns-ft' ),
             'tag_choice'        => '',
+            'use_current'       => '',
             'count'             => '0',
             'show_count'        => '3',
+            'offset'            => '0',
             'use_thumbnails'    => true,
             'content_thumb'     => '100',
             'excerpt_thumb'     => '50',
@@ -319,18 +331,40 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         <p>
             <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'bns-ft' ); ?></label>
-            <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
+            <input class="widefat" type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
         </p>
 
         <p>
             <label for="<?php echo $this->get_field_id( 'tag_choice' ); ?>"><?php _e( 'Tag Names, separated by commas:', 'bns-ft' ); ?></label>
-            <input class="widefat" id="<?php echo $this->get_field_id( 'tag_choice' ); ?>" name="<?php echo $this->get_field_name( 'tag_choice' ); ?>" value="<?php echo $instance['tag_choice']; ?>" />
+            <input class="widefat" type="text" id="<?php echo $this->get_field_id( 'tag_choice' ); ?>" name="<?php echo $this->get_field_name( 'tag_choice' ); ?>" value="<?php echo $instance['tag_choice']; ?>" />
         </p>
 
         <p>
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['show_tag_desc'], true ); ?> id="<?php echo $this->get_field_id( 'show_tag_desc' ); ?>" name="<?php echo $this->get_field_name( 'show_tag_desc' ); ?>" />
             <label for="<?php echo $this->get_field_id( 'show_tag_desc' ); ?>"><?php _e( 'Show first Tag choice description?', 'bns-ft' ); ?></label>
         </p>
+
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['use_current'], true ); ?> id="<?php echo $this->get_field_id( 'use_current' ); ?>" name="<?php echo $this->get_field_name( 'use_current' ); ?>" />
+            <label for="<?php echo $this->get_field_id( 'use_current' ); ?>"><?php _e( '(beta) Use current tag in single view?', 'bns-ft' ); ?></label>
+        </p>
+
+        <table class="bnsft-counts">
+            <tr>
+                <td>
+                    <p>
+                        <label for="<?php echo $this->get_field_id( 'show_count' ); ?>"><?php _e( 'Posts to Display:', 'bns-ft' ); ?></label>
+                        <input type="text" id="<?php echo $this->get_field_id( 'show_count' ); ?>" name="<?php echo $this->get_field_name( 'show_count' ); ?>" value="<?php echo $instance['show_count']; ?>" style="width:85%;" />
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        <label for="<?php echo $this->get_field_id( 'offset' ); ?>"><?php _e( 'Posts Offset:', 'bns-ft' ); ?></label>
+                        <input type="text" id="<?php echo $this->get_field_id( 'offset' ); ?>" name="<?php echo $this->get_field_name( 'offset' ); ?>" value="<?php echo $instance['offset']; ?>" style="width:85%;" />
+                    </p>
+                </td>
+            </tr>
+        </table>
 
         <hr />
         <p><?php _e( 'NB: Some options may not be available depending on which ones are selected.', 'bns-fc'); ?></p>
@@ -355,27 +389,23 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 <td>
                     <p>
                         <label for="<?php echo $this->get_field_id( 'content_thumb' ); ?>"><?php _e( 'Content Thumbnail Size (in px):', 'bns-ft' ); ?></label>
-                        <input id="<?php echo $this->get_field_id( 'content_thumb' ); ?>" name="<?php echo $this->get_field_name( 'content_thumb' ); ?>" value="<?php echo $instance['content_thumb']; ?>" style="width:85%;" />
+                        <input type="text" id="<?php echo $this->get_field_id( 'content_thumb' ); ?>" name="<?php echo $this->get_field_name( 'content_thumb' ); ?>" value="<?php echo $instance['content_thumb']; ?>" style="width:85%;" />
                     </p>
                 </td>
                 <td>
                     <p>
                         <label for="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>"><?php _e( 'Excerpt Thumbnail Size (in px):', 'bns-ft' ); ?></label>
-                        <input id="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_thumb' ); ?>" value="<?php echo $instance['excerpt_thumb']; ?>" style="width:85%;" />
+                        <input type="text" id="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_thumb' ); ?>" value="<?php echo $instance['excerpt_thumb']; ?>" style="width:85%;" />
                     </p>
                 </td>
             </tr>
         </table>
 
         <p>
-            <label for="<?php echo $this->get_field_id( 'show_count' ); ?>"><?php _e( 'Total Posts to Display:', 'bns-ft' ); ?></label>
-            <input class="widefat" id="<?php echo $this->get_field_id( 'show_count' ); ?>" name="<?php echo $this->get_field_name( 'show_count' ); ?>" value="<?php echo $instance['show_count']; ?>" />
-        </p>
-
-        <p>
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_meta'], true ); ?> id="<?php echo $this->get_field_id( 'show_meta' ); ?>" name="<?php echo $this->get_field_name( 'show_meta' ); ?>" />
             <label for="<?php echo $this->get_field_id( 'show_meta' ); ?>"><?php _e( 'Display Author Meta Details?', 'bns-ft' ); ?></label>
         </p>
+
 
         <p>
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_comments'], true ); ?> id="<?php echo $this->get_field_id( 'show_comments' ); ?>" name="<?php echo $this->get_field_name( 'show_comments' ); ?>" />
@@ -430,6 +460,10 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
  * @version 2.1
  * @date    August 4, 2012
  * Add 'no_titles' option
+ *
+ * @version 2.2
+ * @date    December 1, 2012
+ * Add use current option
  */
 function bnsft_shortcode( $atts ) {
     /** Get ready to capture the elusive widget output */
@@ -439,6 +473,7 @@ function bnsft_shortcode( $atts ) {
         $instance = shortcode_atts( array(
             'title'             => __( 'Featured Tag', 'bns-ft' ),
             'tag_choice'        => '',
+            'use_current'       => '',
             'count'             => '0',
             'show_count'        => '3',
             'use_thumbnails'    => true,

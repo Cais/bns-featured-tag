@@ -134,8 +134,9 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 2.2 =
 * Release december 2012
-* Remove load_plugin_textdomain as redundant
+* Add posts offset option
 * Programmatically add version number to enqueue calls
+* Remove load_plugin_textdomain as redundant
 
 = 2.1 =
 * Add 'no_titles' option
