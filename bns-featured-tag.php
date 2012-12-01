@@ -58,6 +58,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Add posts offset option
  *
  * @todo Finish "use current" option
+ * @todo Add Link to title option
  */
 
 /**
@@ -181,11 +182,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $use_thumbnails = $instance['use_thumbnails'];
         $content_thumb  = $instance['content_thumb'];
         $excerpt_thumb  = $instance['excerpt_thumb'];
-        $show_tag_desc  = $instance['show_tag_desc'];
         $show_meta      = $instance['show_meta'];
         $show_comments  = $instance['show_comments'];
         $show_cats      = $instance['show_cats'];
         $show_tags      = $instance['show_tags'];
+        $show_tag_desc  = $instance['show_tag_desc'];
         $only_titles    = $instance['only_titles'];
         $no_titles      = $instance['no_titles'];
         $show_full      = $instance['show_full'];
@@ -295,11 +296,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $instance['use_thumbnails']	= $new_instance['use_thumbnails'];
         $instance['content_thumb']	= $new_instance['content_thumb'];
         $instance['excerpt_thumb']	= $new_instance['excerpt_thumb'];
-        $instance['show_tag_desc']	= $new_instance['show_tag_desc'];
         $instance['show_meta']      = $new_instance['show_meta'];
         $instance['show_comments']	= $new_instance['show_comments'];
         $instance['show_cats']      = $new_instance['show_cats'];
         $instance['show_tags']      = $new_instance['show_tags'];
+        $instance['show_tag_desc']	= $new_instance['show_tag_desc'];
         $instance['only_titles']  	= $new_instance['only_titles'];
         $instance['no_titles']      = $new_instance['no_titles'];
         $instance['show_full']      = $new_instance['show_full'];
@@ -324,21 +325,19 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             'use_thumbnails'    => true,
             'content_thumb'     => '100',
             'excerpt_thumb'     => '50',
-            'show_tag_desc'     => false,
             'show_meta'         => false,
             'show_comments'     => false,
             'show_cats'         => false,
             'show_tags'         => false,
+            'show_tag_desc'     => false,
             'only_titles'       => false,
             'no_titles'         => false,
             'show_full'         => false,
             'excerpt_length'    => '',
             'no_excerpt'        => false,
         );
-
         $instance = wp_parse_args( ( array ) $instance, $defaults );
         ?>
-
         <p>
             <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'bns-ft' ); ?></label>
             <input class="widefat" type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
@@ -379,7 +378,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 <td>
                     <p>
                         <label for="<?php echo $this->get_field_id( 'sort_order' ); ?>"><?php _e( 'Sort Order:', 'bns-ft' ); ?></label>
-                        <select id="<?php echo $this->get_field_id( 'sort_order' ); ?>" name="<?php echo $this->get_field_name( 'sort_order' ); ?>" class="widefat">
+                        <select id="<?php echo $this->get_field_id( 'sort_order' ); ?>" name="<?php echo $this->get_field_name( 'sort_order' ); ?>" style="width:85%;" >
                             <option <?php selected( 'asc', $instance['sort_order'], true ); ?>>asc</option>
                             <option <?php selected( 'desc', $instance['sort_order'], true ); ?>>desc</option>
                             <option <?php selected( 'rand', $instance['sort_order'], true ); ?>>rand</option>
@@ -393,74 +392,83 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         <hr />
         <!-- The following option choices may affect the widget option panel layout -->
         <p><?php _e( 'NB: Some options may not be available depending on which ones are selected.', 'bns-fc'); ?></p>
+        <p class="bnsfc-display-all-posts-check">
+            <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['only_titles'], true ); ?> id="<?php echo $this->get_field_id( 'only_titles' ); ?>" name="<?php echo $this->get_field_name( 'only_titles' ); ?>" />
+            <?php $all_options_toggle = ( checked( (bool) $instance['only_titles'], true, false ) ) ? 'closed' : 'open'; ?>
+            <label for="<?php echo $this->get_field_id( 'only_titles' ); ?>"><?php _e( 'ONLY display post Titles?', 'bns-ft' ); ?></label>
+        </p>
 
-        <p>
+        <p class="bnsft-all-options-<?php echo $all_options_toggle; ?> bnsft-no-titles">
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['no_titles'], true ); ?> id="<?php echo $this->get_field_id( 'no_titles' ); ?>" name="<?php echo $this->get_field_name( 'no_titles' ); ?>" />
             <label for="<?php echo $this->get_field_id( 'no_titles' ); ?>"><?php _e( 'Do NOT display Post Titles?', 'bns-ft' ); ?></label>
         </p>
 
-        <p>
-            <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['only_titles'], true ); ?> id="<?php echo $this->get_field_id( 'only_titles' ); ?>" name="<?php echo $this->get_field_name( 'only_titles' ); ?>" />
-            <label for="<?php echo $this->get_field_id( 'only_titles' ); ?>"><?php _e( 'Display only post Titles?', 'bns-ft' ); ?></label>
-        </p>
+        <!-- If the theme supports post-thumbnails carry on; otherwise hide the thumbnails section -->
+        <?php if ( ! current_theme_supports( 'post-thumbnails' ) ) echo '<div class="bnsfc-thumbnails-closed">'; ?>
+            <p class="bnsft-all-options-<?php echo $all_options_toggle; ?> bnsft-display-thumbnail-sizes"><!-- Hide all options below if ONLY post titles are to be displayed -->
+                <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['use_thumbnails'], true ); ?> id="<?php echo $this->get_field_id( 'use_thumbnails' ); ?>" name="<?php echo $this->get_field_name( 'use_thumbnails' ); ?>" />
+                <?php $thumbnails_toggle = ( checked( (bool) $instance['use_thumbnails'], true, false ) ) ? 'open' : 'closed'; ?>
+                <label for="<?php echo $this->get_field_id( 'use_thumbnails' ); ?>"><?php _e( 'Use Featured Image Thumbnails?', 'bns-ft' ); ?></label>
+            </p>
 
-        <p>
-            <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['use_thumbnails'], true ); ?> id="<?php echo $this->get_field_id( 'use_thumbnails' ); ?>" name="<?php echo $this->get_field_name( 'use_thumbnails' ); ?>" />
-            <label for="<?php echo $this->get_field_id( 'use_thumbnails' ); ?>"><?php _e( 'Use Featured Image / Post Thumbnails?', 'bns-ft' ); ?></label>
-        </p>
+            <table class="bnsft-thumbnails-<?php echo $thumbnails_toggle; ?> bnsft-all-options-<?php echo $all_options_toggle; ?>"><!-- Hide table if featured image / thumbnails are not used -->
+                <tr>
+                    <td>
+                        <p>
+                            <label for="<?php echo $this->get_field_id( 'content_thumb' ); ?>"><?php _e( 'Content Thumbnail Size (in px):', 'bns-ft' ); ?></label>
+                            <input type="text" id="<?php echo $this->get_field_id( 'content_thumb' ); ?>" name="<?php echo $this->get_field_name( 'content_thumb' ); ?>" value="<?php echo $instance['content_thumb']; ?>" style="width:85%;" />
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            <label for="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>"><?php _e( 'Excerpt Thumbnail Size (in px):', 'bns-ft' ); ?></label>
+                            <input type="text" id="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_thumb' ); ?>" value="<?php echo $instance['excerpt_thumb']; ?>" style="width:85%;" />
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        <?php if ( ! current_theme_supports( 'post-thumbnails' ) ) echo '</div>'; ?>
+        <!-- Carry on from here if there is no thumbnail support -->
 
-        <table>
-            <tr>
-                <td>
-                    <p>
-                        <label for="<?php echo $this->get_field_id( 'content_thumb' ); ?>"><?php _e( 'Content Thumbnail Size (in px):', 'bns-ft' ); ?></label>
-                        <input type="text" id="<?php echo $this->get_field_id( 'content_thumb' ); ?>" name="<?php echo $this->get_field_name( 'content_thumb' ); ?>" value="<?php echo $instance['content_thumb']; ?>" style="width:85%;" />
-                    </p>
-                </td>
-                <td>
-                    <p>
-                        <label for="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>"><?php _e( 'Excerpt Thumbnail Size (in px):', 'bns-ft' ); ?></label>
-                        <input type="text" id="<?php echo $this->get_field_id( 'excerpt_thumb' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_thumb' ); ?>" value="<?php echo $instance['excerpt_thumb']; ?>" style="width:85%;" />
-                    </p>
-                </td>
-            </tr>
-        </table>
-
-        <p>
+        <p class="bnsft-all-options-<?php echo $all_options_toggle; ?>">
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_meta'], true ); ?> id="<?php echo $this->get_field_id( 'show_meta' ); ?>" name="<?php echo $this->get_field_name( 'show_meta' ); ?>" />
             <label for="<?php echo $this->get_field_id( 'show_meta' ); ?>"><?php _e( 'Display Author Meta Details?', 'bns-ft' ); ?></label>
         </p>
 
 
-        <p>
+        <p class="bnsft-all-options-<?php echo $all_options_toggle; ?>">
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_comments'], true ); ?> id="<?php echo $this->get_field_id( 'show_comments' ); ?>" name="<?php echo $this->get_field_name( 'show_comments' ); ?>" />
             <label for="<?php echo $this->get_field_id( 'show_comments' ); ?>"><?php _e( 'Display Comment Totals?', 'bns-ft' ); ?></label>
         </p>
 
-        <p>
+        <p class="bnsft-all-options-<?php echo $all_options_toggle; ?>">
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_cats'], true ); ?> id="<?php echo $this->get_field_id( 'show_cats' ); ?>" name="<?php echo $this->get_field_name( 'show_cats' ); ?>" />
             <label for="<?php echo $this->get_field_id( 'show_cats' ); ?>"><?php _e( 'Display the Post Categories?', 'bns-ft' ); ?></label>
         </p>
 
-        <p>
+        <p class="bnsft-all-options-<?php echo $all_options_toggle; ?>">
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_tags'], true ); ?> id="<?php echo $this->get_field_id( 'show_tags' ); ?>" name="<?php echo $this->get_field_name( 'show_tags' ); ?>" />
             <label for="<?php echo $this->get_field_id( 'show_tags' ); ?>"><?php _e( 'Display the Post Tags?', 'bns-ft' ); ?></label>
         </p>
 
-        <p>
+        <p class="bnsft-all-options-<?php echo $all_options_toggle; ?> bnsft-excerpt-option-open-check">
             <input class="checkbox" type="checkbox" <?php checked( ( bool ) $instance['show_full'], true ); ?> id="<?php echo $this->get_field_id( 'show_full' ); ?>" name="<?php echo $this->get_field_name( 'show_full' ); ?>" />
+            <?php $show_full_toggle = ( checked( (bool) $instance['show_full'], true, false ) ) ? 'closed' : 'open'; ?>
             <label for="<?php echo $this->get_field_id( 'show_full' ); ?>"><?php _e( 'Display entire post?', 'bns-ft' ); ?></label>
         </p>
 
-        <hr /> <!-- separates meta details display from content/excerpt display options -->
-        <p><?php _e( 'The excerpt is shown by default; or, the first 55 words if it does not exist.', 'bns-ft' ); ?></p>
-
-        <p>
-            <label for="<?php echo $this->get_field_id( 'excerpt_length' ); ?>"><?php _e( 'Set your word count if you want more or less than 55.', 'bns-ft' ); ?></label>
-            <input class="widefat" id="<?php echo $this->get_field_id( 'excerpt_length' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_length' ); ?>" value="<?php echo $instance['excerpt_length']; ?>" />
+        <hr />
+        <!-- Hide excerpt explanation and word count option if entire post is displayed -->
+        <p class="bnsft-all-options-<?php echo $all_options_toggle; ?> bnsft-excerpt-option-<?php echo $show_full_toggle; ?>">
+            <?php _e( 'The post excerpt is shown by default, if it exists; otherwise the first 55 words of the post are shown as the excerpt ...', 'bns-ft'); ?>
         </p>
 
-        <p>
+        <p class="bnsft-all-options-<?php echo $all_options_toggle; ?> bnsft-excerpt-option-<?php echo $show_full_toggle; ?>">
+            <label for="<?php echo $this->get_field_id( 'excerpt_length' ); ?>"><?php _e( '... or set the amount of words you want to show:', 'bns-ft' ); ?></label>
+            <input type="text" id="<?php echo $this->get_field_id( 'excerpt_length' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_length' ); ?>" value="<?php echo $instance['excerpt_length']; ?>" style="width:95%;" />
+        </p>
+
+        <p class="bnsft-all-options-<?php echo $all_options_toggle; ?> bnsft-excerpt-option-<?php echo $show_full_toggle; ?>">
             <label for="<?php echo $this->get_field_id( 'no_excerpt' ); ?>"><?php _e( '... or have no excerpt at all!', 'bns-ft' ); ?></label>
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['no_excerpt'], true ); ?> id="<?php echo $this->get_field_id( 'no_excerpt' ); ?>" name="<?php echo $this->get_field_name( 'no_excerpt' ); ?>" />
         </p>
