@@ -52,23 +52,28 @@ or
 Reading this article for further assistance: http://wpfirstaid.com/2009/12/plugin-installation/
 
 = Shortcode: bnsft =
- Default Parameters:
+Default Parameters:
 
-*   'title'             => 'Featured Tag'
-*   'tag_choice'        => ''
-*   'count'             => '0'
-*   'show_count'        => '3'
-*   'use_thumbnails'    => true
-*   'excerpt_thumb'     => '50'
-*   'show_tag_desc'     => false
-*   'show_meta'         => false
-*   'show_comments'     => false
-*   'show_cats'         => false
-*   'show_tags'         => false
-*   'only_titles'       => false
-*   'no_titles'         => false
-*   'excerpt_length'    => ''
-*   'no_excerpt'        => false
+* 'title'             => 'Featured Tag'
+* 'tag_choice'        => ''
+* 'use_current'       => ''
+* 'count'             => '0'
+* 'show_count'        => '3'
+* 'offset'            => ''
+* 'sort_order'        => 'DESC'
+* 'use_thumbnails'    => true
+* 'content_thumb'     => '100'
+* 'excerpt_thumb'     => '50'
+* 'show_tag_desc'     => false
+* 'show_meta'         => false
+* 'show_comments'     => false
+* 'show_cats'         => false
+* 'show_tags'         => false
+* 'only_titles'       => false
+* 'no_titles'         => false
+* 'show_full'         => false
+* 'excerpt_length'    => ''
+* 'no_excerpt'        => false
 
 == Frequently Asked Questions ==
 = Where can I get support for this plugin? =
@@ -134,8 +139,13 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 2.2 =
 * Release december 2012
-* Add posts offset option
-* Add sort order option
+* Added filter to full post link element
+* Added filter to allow modification of author and date post meta details
+* Added filter to allow modification of category list post meta details
+* Added "Posts Offset" option
+* Added "Sort Order" option
+* Improved widget option panel UX with jQuery toggles
+* Optimize output buffer closure in shortcode function
 * Programmatically add version number to enqueue calls
 * Remove load_plugin_textdomain as redundant
 

@@ -54,6 +54,8 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @version 2.2
  * @date    December 1, 2012
  * Remove load_plugin_textdomain as redundant
+ * Add filters to allow modification of author and date post meta details
+ * Add filters to allow modification of category list post meta details
  * Add use current tag for single posts option
  * Add posts offset option
  *
@@ -87,19 +89,25 @@ if ( version_compare( $wp_version, "2.9", "<") )
  * @param   $text - post content
  * @param   int $length - user defined amount of words
  *
+ * @uses    apply_filters
  * @uses    get_permalink
  * @uses    the_title_attribute
  *
  * @return  string
  *
- * @todo Review the possibility of optioning the read-more / permalink symbol - currently uses infinity symbol
+ * @version 2.2
+ * @date    December 1, 2012
+ * Added filter to full post link element
  */
 function bnsft_custom_excerpt( $text, $length = 55 ) {
     $text = strip_tags( $text );
     $words = explode( ' ', $text, $length + 1 );
 
+    /** @var $link_symbol - default: infinity symbol */
+    $link_symbol = apply_filters( 'bnsft_link_symbol', '&infin;' );
+
     /** Create link to full post for end of custom length excerpt output */
-    $bnsft_link = ' <strong><a class="bnsft-link" href="' . get_permalink() . '" title="' . the_title_attribute( array( 'before' => __( 'Permalink to: ', 'bns-ft' ), 'after' => '', 'echo' => false ) ) . '">&infin;</a></strong>';
+    $bnsft_link = ' <strong><a class="bnsft-link" href="' . get_permalink() . '" title="' . the_title_attribute( array( 'before' => __( 'Permalink to: ', 'bns-ft' ), 'after' => '', 'echo' => false ) ) . '">' . $link_symbol . '</a></strong>';
 
     if ( ( ! $length ) || ( count( $words ) < $length ) ) {
         $text .= $bnsft_link;
@@ -166,12 +174,17 @@ add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
  * @internal Used with action: admin_enqueue_scripts
  */
 function BNSFT_Options_Scripts_and_Styles() {
+    /** Call the wp-admin plugin code */
+    require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+    /** @var $bnsfc_data - holds the plugin header data */
+    $bnsft_data = get_plugin_data( __FILE__ );
+
     /** Enqueue Options Scripts */
-    wp_enqueue_script( 'bnsft-options', plugin_dir_url( __FILE__ ) . 'bnsft-options.js', array( 'jquery' ), '2.0' );
+    wp_enqueue_script( 'bnsft-options', plugin_dir_url( __FILE__ ) . 'bnsft-options.js', array( 'jquery' ), $bnsft_data['Version'] );
     /** Enqueue Options Style Sheets */
-    wp_enqueue_style( 'BNSFT-Option-Style', plugin_dir_url( __FILE__ ) . 'bnsft-option-style.css', array(), '2.0', 'screen' );
+    wp_enqueue_style( 'BNSFT-Option-Style', plugin_dir_url( __FILE__ ) . 'bnsft-option-style.css', array(), $bnsft_data['Version'], 'screen' );
     if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-options-custom-style.css' ) ) {
-        wp_enqueue_style( 'BNSFT-Options-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-options-custom-style.css', array(), '2.0', 'screen' );
+        wp_enqueue_style( 'BNSFT-Options-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-options-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
     }
 }
 add_action( 'admin_enqueue_scripts', 'BNSFT_Options_Scripts_and_Styles' );
@@ -262,13 +275,13 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                     <?php } ?>
                     <div class="post-details">
                         <?php if ( $show_meta ) {
-                            printf( __( 'by %1$s on %2$s', 'bns-ft' ), get_the_author(), get_the_time( get_option( 'date_format' ) ) ); ?><br />
+                            echo apply_filters( 'bnsfc_show_meta', sprintf( __( 'by %1$s on %2$s', 'bns-fc' ), get_the_author(), get_the_time( get_option( 'date_format' ) ) ) ); ?><br />
                         <?php }
                         if ( ( $show_comments ) && ( ! post_password_required() ) ) {
                             comments_popup_link( __( 'with No Comments', 'bns-ft' ), __( 'with 1 Comment', 'bns-ft' ), __( 'with % Comments', 'bns-ft' ), '', __( 'with Comments Closed', 'bns-ft' ) ); ?><br />
                         <?php }
                         if ( $show_cats ) {
-                            printf( __( 'in %s', 'bns-ft' ), get_the_category_list( ', ' ) ); ?><br />
+                            echo apply_filters( 'bnsfc_show_cats', sprintf( __( 'in %s', 'bns-fc' ), get_the_category_list( ', ' ) ) ); ?><br />
                         <?php }
                         if ( $show_tags ) {
                             the_tags( __( 'as ', 'bns-ft' ), ', ', '' ); ?><br />
@@ -344,7 +357,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $defaults = array(
             'title'             => __( 'Featured Tag', 'bns-ft' ),
             'tag_choice'        => '',
-            'use_current'       => '',
+            'use_current'       => false,
             'count'             => '0',
             'show_count'        => '3',
             'offset'            => '0',
@@ -526,6 +539,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
  * Add use current option
  * Add offset option
  * Add sort order option
+ * Optimize output buffer closure in shortcode function
  */
 function bnsft_shortcode( $atts ) {
     /** Get ready to capture the elusive widget output */
@@ -535,7 +549,7 @@ function bnsft_shortcode( $atts ) {
         $instance = shortcode_atts( array(
             'title'             => __( 'Featured Tag', 'bns-ft' ),
             'tag_choice'        => '',
-            'use_current'       => '',
+            'use_current'       => false, /** Will not change anything if set to true, yet */
             'count'             => '0',
             'show_count'        => '3',
             'offset'            => '',
@@ -562,9 +576,7 @@ function bnsft_shortcode( $atts ) {
             $after_title    = '',
         ) );
     /** Get the_widget output and put into its own container */
-    $bnsft_content = ob_get_contents();
-    ob_end_clean();
-    // All your snipes belong to us!
+    $bnsft_content = ob_get_clean();
 
     return $bnsft_content;
 }
