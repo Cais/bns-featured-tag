@@ -149,6 +149,33 @@ function BNSFT_Scripts_and_Styles() {
 }
 add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
 
+/**
+ * Enqueue Options Plugin Scripts and Styles
+ *
+ * Add plugin options scripts and stylesheet(s) to be used only on the Administration Panels
+ *
+ * @package BNS_Featured_Category
+ * @since   2.0
+ *
+ * @uses    plugin_dir_path
+ * @uses    plugin_dir_url
+ * @uses    wp_enqueue_script
+ * @uses    wp_enqueue_style
+ *
+ * @internal 'jQuery' is enqueued as a dependency of the 'bnsft-options.js' enqueue
+ * @internal Used with action: admin_enqueue_scripts
+ */
+function BNSFT_Options_Scripts_and_Styles() {
+    /** Enqueue Options Scripts */
+    wp_enqueue_script( 'bnsft-options', plugin_dir_url( __FILE__ ) . 'bnsft-options.js', array( 'jquery' ), '2.0' );
+    /** Enqueue Options Style Sheets */
+    wp_enqueue_style( 'BNSFT-Option-Style', plugin_dir_url( __FILE__ ) . 'bnsft-option-style.css', array(), '2.0', 'screen' );
+    if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-options-custom-style.css' ) ) {
+        wp_enqueue_style( 'BNSFT-Options-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-options-custom-style.css', array(), '2.0', 'screen' );
+    }
+}
+add_action( 'admin_enqueue_scripts', 'BNSFT_Options_Scripts_and_Styles' );
+
 /** Function that registers our widget. */
 function load_bnsft_widget() {
     register_widget( 'BNS_Featured_Tag_Widget' );
