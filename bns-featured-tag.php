@@ -58,6 +58,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @version 2.3
  * @date    February 16, 2013
  * Moved all code into class structure
+ * Replace `query_posts` with new `WP_Query` class object
  *
  * @todo Finish "use current" option
  * @todo Add Link to title option
@@ -274,13 +275,13 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             );
         }
 
-        /** todo Review implementing new WP_Query in place of query_posts */
-        query_posts( $query_args );
+        /** @var $bnsft_query - New query object to hold specific posts */
+        $bnsft_query = new WP_Query( $query_args );
 
         if ( $show_tag_desc ) {
             echo '<div class="bnsft-tag-desc">' . tag_description() . '</div>';
         }
-        if ( have_posts()) : while ( have_posts() ) : the_post();
+        if ( $bnsft_query->have_posts()) : while ( $bnsft_query->have_posts() ) : $bnsft_query->the_post();
             // static $count = 0; /* see above */
             if ( $count == $show_count ) {
                 break;
@@ -336,7 +337,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         /** @var    $after_widget   string - defined by theme */
         echo $after_widget;
-        wp_reset_query();
+
+        wp_reset_postdata();
     }
 
     function update( $new_instance, $old_instance ) {

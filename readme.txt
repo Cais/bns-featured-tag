@@ -140,6 +140,7 @@ Please stay current with your WordPress installation, your active theme, and you
 = 2.3 =
 * Released February 2013
 * Moved all code into class structure
+* Replace `query_posts` with new `WP_Query` class object
 
 = 2.2 =
 * Released December 2012
