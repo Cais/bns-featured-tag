@@ -86,16 +86,16 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             exit ( $exit_message );
 
         /** Add Scripts and Styles */
-        add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
+        add_action( 'wp_enqueue_scripts', array( $this, 'BNSFT_Scripts_and_Styles' ) );
 
         /** Add Options Scripts and Styles */
-        add_action( 'admin_enqueue_scripts', 'BNSFT_Options_Scripts_and_Styles' );
+        add_action( 'admin_enqueue_scripts', array( $this, 'BNSFT_Options_Scripts_and_Styles' ) );
 
         /** Add Shortcode */
-        add_shortcode( 'bnsft', 'bnsft_shortcode' );
+        add_shortcode( 'bnsft', array( $this, 'bnsft_shortcode' ) );
 
         /** Add load_bnsft_widget function to the widgets_init hook */
-        add_action( 'widgets_init', 'load_bnsft_widget' );
+        add_action( 'widgets_init', array( $this, 'load_bnsft_widget' ) );
 
     }
 
@@ -259,9 +259,19 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         /** Check if $sort_order is set to rand (random) and use the `orderby` parameter; otherwise use the `order` parameter */
         if ( 'rand' == $sort_order ) {
-            $query_args = "tag=$tag_choice&posts_per_page=$show_count&offset=$offset&orderby=$sort_order";
+            $query_args = array(
+                'tag'               => $tag_choice,
+                'posts_per_page'    => $show_count,
+                'offset'            => $offset,
+                'orderby'           => $sort_order
+            );
         } else {
-            $query_args = "tag=$tag_choice&posts_per_page=$show_count&offset=$offset&order=$sort_order";
+            $query_args = array(
+                'tag'               => $tag_choice,
+                'posts_per_page'    => $show_count,
+                'offset'            => $offset,
+                'order'             => $sort_order
+            );
         }
 
         /** todo Review implementing new WP_Query in place of query_posts */
