@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.2
+Version: 2.3
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 Textdomain: bns-ft
@@ -23,9 +23,9 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @link        http://buynowshop.com/plugins/bns-featured-tag/
  * @link        https://github.com/Cais/bns-featured-tag/
  * @link        http://wordpress.org/extend/plugins/bns-featured-tag/
- * @version     2.2
+ * @version     2.3
  * @author      Edward Caissie <edward.caissie@gmail.com>
- * @copyright   Copyright (c) 2009-2012, Edward Caissie
+ * @copyright   Copyright (c) 2009-2013, Edward Caissie
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 2, as published by the
@@ -47,10 +47,6 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * The license for this software can also likely be found here:
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * @version 2.1
- * @date    August 4, 2012
- * Add 'no_titles' option
- *
  * @version 2.2
  * @date    December 1, 2012
  * Remove load_plugin_textdomain as redundant
@@ -59,144 +55,13 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Add use current tag for single posts option
  * Add posts offset option
  *
+ * @version 2.3
+ * @date    February 16, 2013
+ * Moved all code into class structure
+ *
  * @todo Finish "use current" option
  * @todo Add Link to title option
  */
-
-/**
- * Check installed WordPress version for compatibility
- * @internal    Requires WordPress version 2.9
- * @internal    @uses current_theme_supports
- * @internal    @uses the_post_thumbnail
- * @internal    @uses has_post_thumbnail
- */
-global $wp_version;
-$exit_message = 'BNS Featured Tag requires WordPress version 2.9 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>';
-if ( version_compare( $wp_version, "2.9", "<") )
-    exit ( $exit_message );
-
-/**
- * BNS Featured Tag Custom Excerpt
- *
- * Strips the post content of tags and returns the entire post content if there
- * are less than $length words; otherwise the amount of words equal to $length
- * is returned. In both cases, the returned text is appended with a permalink to
- * the full post.
- *
- * @package BNS_Featured_Tag
- * @since   1.9
- *
- * @param   $text - post content
- * @param   int $length - user defined amount of words
- *
- * @uses    apply_filters
- * @uses    get_permalink
- * @uses    the_title_attribute
- *
- * @return  string
- *
- * @version 2.2
- * @date    December 1, 2012
- * Added filter to full post link element
- */
-function bnsft_custom_excerpt( $text, $length = 55 ) {
-    $text = strip_tags( $text );
-    $words = explode( ' ', $text, $length + 1 );
-
-    /** @var $link_symbol - default: infinity symbol */
-    $link_symbol = apply_filters( 'bnsft_link_symbol', '&infin;' );
-
-    /** Create link to full post for end of custom length excerpt output */
-    $bnsft_link = ' <strong><a class="bnsft-link" href="' . get_permalink() . '" title="' . the_title_attribute( array( 'before' => __( 'Permalink to: ', 'bns-ft' ), 'after' => '', 'echo' => false ) ) . '">' . $link_symbol . '</a></strong>';
-
-    if ( ( ! $length ) || ( count( $words ) < $length ) ) {
-        $text .= $bnsft_link;
-        return $text;
-    } else {
-        array_pop( $words );
-        array_push( $words, '...' );
-        $text = implode( ' ', $words );
-    }
-    $text .= $bnsft_link;
-    return $text;
-}
-
-/**
- * Enqueue Plugin Scripts and Styles
- *
- * @package BNS_Featured_Tag
- * @since   1.9
- *
- * @uses    get_plugin_data
- * @uses    plugin_dir_path
- * @uses    plugin_dir_url
- * @uses    wp_enqueue_style
- *
- * @internal Used with action: wp_enqueue_styles
- *
- * @version 1.9.1
- * @date    December 14, 2011
- * Fixed 404 error when 'bnsft-custom-style.css' is not available
- *
- * @version 2.2
- * @date    December 1, 2012
- * Programmatically add version number to enqueue calls
- */
-function BNSFT_Scripts_and_Styles() {
-    /** Call the wp-admin plugin code */
-    require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
-    /** @var $bnsfc_data - holds the plugin header data */
-    $bnsft_data = get_plugin_data( __FILE__ );
-
-    /** Enqueue Scripts */
-    /** Enqueue Styles */
-    wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), $bnsft_data['Version'], 'screen' );
-    if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-custom-style.css' ) ) {
-        wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
-    }
-}
-add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
-
-/**
- * Enqueue Options Plugin Scripts and Styles
- *
- * Add plugin options scripts and stylesheet(s) to be used only on the Administration Panels
- *
- * @package BNS_Featured_Category
- * @since   2.0
- *
- * @uses    plugin_dir_path
- * @uses    plugin_dir_url
- * @uses    wp_enqueue_script
- * @uses    wp_enqueue_style
- *
- * @internal 'jQuery' is enqueued as a dependency of the 'bnsft-options.js' enqueue
- * @internal Used with action: admin_enqueue_scripts
- */
-function BNSFT_Options_Scripts_and_Styles() {
-    /** Call the wp-admin plugin code */
-    require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
-    /** @var $bnsfc_data - holds the plugin header data */
-    $bnsft_data = get_plugin_data( __FILE__ );
-
-    /** Enqueue Options Scripts */
-    wp_enqueue_script( 'bnsft-options', plugin_dir_url( __FILE__ ) . 'bnsft-options.js', array( 'jquery' ), $bnsft_data['Version'] );
-    /** Enqueue Options Style Sheets */
-    wp_enqueue_style( 'BNSFT-Option-Style', plugin_dir_url( __FILE__ ) . 'bnsft-option-style.css', array(), $bnsft_data['Version'], 'screen' );
-    if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-options-custom-style.css' ) ) {
-        wp_enqueue_style( 'BNSFT-Options-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-options-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
-    }
-}
-add_action( 'admin_enqueue_scripts', 'BNSFT_Options_Scripts_and_Styles' );
-
-/** Function that registers our widget. */
-function load_bnsft_widget() {
-    register_widget( 'BNS_Featured_Tag_Widget' );
-}
-
-/** Add load_bnsft_widget function to the widgets_init hook */
-add_action( 'widgets_init', 'load_bnsft_widget' );
-
 class BNS_Featured_Tag_Widget extends WP_Widget {
     function BNS_Featured_Tag_Widget() {
         /** Widget settings */
@@ -207,7 +72,148 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         /** Create the widget */
         $this->WP_Widget( 'bns-featured-tag', 'BNS Featured Tag', $widget_ops, $control_ops );
+
+        /**
+         * Check installed WordPress version for compatibility
+         * @internal    Requires WordPress version 2.9
+         * @internal    @uses current_theme_supports
+         * @internal    @uses the_post_thumbnail
+         * @internal    @uses has_post_thumbnail
+         */
+        global $wp_version;
+        $exit_message = 'BNS Featured Tag requires WordPress version 2.9 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>';
+        if ( version_compare( $wp_version, "2.9", "<") )
+            exit ( $exit_message );
+
+        /** Add Scripts and Styles */
+        add_action( 'wp_enqueue_scripts', 'BNSFT_Scripts_and_Styles' );
+
+        /** Add Options Scripts and Styles */
+        add_action( 'admin_enqueue_scripts', 'BNSFT_Options_Scripts_and_Styles' );
+
+        /** Add Shortcode */
+        add_shortcode( 'bnsft', 'bnsft_shortcode' );
+
+        /** Add load_bnsft_widget function to the widgets_init hook */
+        add_action( 'widgets_init', 'load_bnsft_widget' );
+
     }
+
+
+    /**
+     * BNS Featured Tag Custom Excerpt
+     *
+     * Strips the post content of tags and returns the entire post content if there
+     * are less than $length words; otherwise the amount of words equal to $length
+     * is returned. In both cases, the returned text is appended with a permalink to
+     * the full post.
+     *
+     * @package BNS_Featured_Tag
+     * @since   1.9
+     *
+     * @param   $text - post content
+     * @param   int $length - user defined amount of words
+     *
+     * @uses    apply_filters
+     * @uses    get_permalink
+     * @uses    the_title_attribute
+     *
+     * @return  string
+     *
+     * @version 2.2
+     * @date    December 1, 2012
+     * Added filter to full post link element
+     */
+    function bnsft_custom_excerpt( $text, $length = 55 ) {
+        $text = strip_tags( $text );
+        $words = explode( ' ', $text, $length + 1 );
+
+        /** @var $link_symbol - default: infinity symbol */
+        $link_symbol = apply_filters( 'bnsft_link_symbol', '&infin;' );
+
+        /** Create link to full post for end of custom length excerpt output */
+        $bnsft_link = ' <strong><a class="bnsft-link" href="' . get_permalink() . '" title="' . the_title_attribute( array( 'before' => __( 'Permalink to: ', 'bns-ft' ), 'after' => '', 'echo' => false ) ) . '">' . $link_symbol . '</a></strong>';
+
+        if ( ( ! $length ) || ( count( $words ) < $length ) ) {
+            $text .= $bnsft_link;
+            return $text;
+        } else {
+            array_pop( $words );
+            array_push( $words, '...' );
+            $text = implode( ' ', $words );
+        }
+        $text .= $bnsft_link;
+        return $text;
+    }
+
+
+    /**
+     * Enqueue Plugin Scripts and Styles
+     *
+     * @package BNS_Featured_Tag
+     * @since   1.9
+     *
+     * @uses    get_plugin_data
+     * @uses    plugin_dir_path
+     * @uses    plugin_dir_url
+     * @uses    wp_enqueue_style
+     *
+     * @internal Used with action: wp_enqueue_styles
+     *
+     * @version 1.9.1
+     * @date    December 14, 2011
+     * Fixed 404 error when 'bnsft-custom-style.css' is not available
+     *
+     * @version 2.2
+     * @date    December 1, 2012
+     * Programmatically add version number to enqueue calls
+     */
+    function BNSFT_Scripts_and_Styles() {
+        /** Call the wp-admin plugin code */
+        require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+        /** @var $bnsfc_data - holds the plugin header data */
+        $bnsft_data = get_plugin_data( __FILE__ );
+
+        /** Enqueue Scripts */
+        /** Enqueue Styles */
+        wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), $bnsft_data['Version'], 'screen' );
+        if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-custom-style.css' ) ) {
+            wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
+        }
+    }
+
+
+    /**
+     * Enqueue Options Plugin Scripts and Styles
+     *
+     * Add plugin options scripts and stylesheet(s) to be used only on the Administration Panels
+     *
+     * @package BNS_Featured_Category
+     * @since   2.0
+     *
+     * @uses    plugin_dir_path
+     * @uses    plugin_dir_url
+     * @uses    wp_enqueue_script
+     * @uses    wp_enqueue_style
+     *
+     * @internal 'jQuery' is enqueued as a dependency of the 'bnsft-options.js' enqueue
+     * @internal Used with action: admin_enqueue_scripts
+     */
+    function BNSFT_Options_Scripts_and_Styles() {
+        /** Call the wp-admin plugin code */
+        require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+        /** @var $bnsfc_data - holds the plugin header data */
+        $bnsft_data = get_plugin_data( __FILE__ );
+
+        /** Enqueue Options Scripts */
+        wp_enqueue_script( 'bnsft-options', plugin_dir_url( __FILE__ ) . 'bnsft-options.js', array( 'jquery' ), $bnsft_data['Version'] );
+        /** Enqueue Options Style Sheets */
+        wp_enqueue_style( 'BNSFT-Option-Style', plugin_dir_url( __FILE__ ) . 'bnsft-option-style.css', array(), $bnsft_data['Version'], 'screen' );
+        if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-options-custom-style.css' ) ) {
+            wp_enqueue_style( 'BNSFT-Options-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-options-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
+        }
+    }
+
 
     function widget( $args, $instance ) {
         extract( $args );
@@ -299,7 +305,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                         } elseif ( isset( $instance['excerpt_length']) && $instance['excerpt_length'] > 0 ) {
                             if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
                                 <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
-                            <?php echo bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
+                            <?php echo $this->bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
                         } elseif ( ! $instance['no_excerpt'] ) {
                             if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
                                 <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
@@ -514,70 +520,81 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         </p>
 
     <?php }
-}
-// End class BNS_Featured_Tag_Widget
 
-/**
- * BNSFT Shortcode Start
- * - May the Gods of programming protect us all!
- *
- * @package BNS_Featured_Tag
- *
- * @param   $atts
- *
- * @uses    shortcode_atts
- * @uses    the_widget
- *
- * @return  string ob_get_contents
- *
- * @version 2.1
- * @date    August 4, 2012
- * Add 'no_titles' option
- *
- * @version 2.2
- * @date    December 1, 2012
- * Add use current option
- * Add offset option
- * Add sort order option
- * Optimize output buffer closure in shortcode function
- */
-function bnsft_shortcode( $atts ) {
-    /** Get ready to capture the elusive widget output */
-    ob_start();
-    the_widget(
-        'BNS_Featured_Tag_Widget',
-        $instance = shortcode_atts( array(
-            'title'             => __( 'Featured Tag', 'bns-ft' ),
-            'tag_choice'        => '',
-            'use_current'       => false, /** Will not change anything if set to true, yet */
-            'count'             => '0',
-            'show_count'        => '3',
-            'offset'            => '',
-            'sort_order'        => 'DESC',
-            'use_thumbnails'    => true,
-            'content_thumb'     => '100',
-            'excerpt_thumb'     => '50',
-            'show_tag_desc'     => false,
-            'show_meta'         => false,
-            'show_comments'     => false,
-            'show_cats'         => false,
-            'show_tags'         => false,
-            'only_titles'       => false,
-            'no_titles'         => false,
-            'show_full'         => false,
-            'excerpt_length'    => '',
-            'no_excerpt'        => false,
-        ), $atts),
-        $args = array(
-            /** clear variables defined by theme for widgets */
-            $before_widget  = '',
-            $after_widget   = '',
-            $before_title   = '',
-            $after_title    = '',
-        ) );
-    /** Get the_widget output and put into its own container */
-    $bnsft_content = ob_get_clean();
 
-    return $bnsft_content;
-}
-add_shortcode( 'bnsft', 'bnsft_shortcode' );
+    /**
+     * BNSFT Shortcode Start
+     * - May the Gods of programming protect us all!
+     *
+     * @package BNS_Featured_Tag
+     *
+     * @param   $atts
+     *
+     * @uses    shortcode_atts
+     * @uses    the_widget
+     *
+     * @return  string ob_get_contents
+     *
+     * @version 2.1
+     * @date    August 4, 2012
+     * Add 'no_titles' option
+     *
+     * @version 2.2
+     * @date    December 1, 2012
+     * Add use current option
+     * Add offset option
+     * Add sort order option
+     * Optimize output buffer closure in shortcode function
+     */
+    function bnsft_shortcode( $atts ) {
+        /** Get ready to capture the elusive widget output */
+        ob_start();
+        the_widget(
+            'BNS_Featured_Tag_Widget',
+            $instance = shortcode_atts( array(
+                'title'             => __( 'Featured Tag', 'bns-ft' ),
+                'tag_choice'        => '',
+                'use_current'       => false, /** Will not change anything if set to true, yet */
+                'count'             => '0',
+                'show_count'        => '3',
+                'offset'            => '',
+                'sort_order'        => 'DESC',
+                'use_thumbnails'    => true,
+                'content_thumb'     => '100',
+                'excerpt_thumb'     => '50',
+                'show_tag_desc'     => false,
+                'show_meta'         => false,
+                'show_comments'     => false,
+                'show_cats'         => false,
+                'show_tags'         => false,
+                'only_titles'       => false,
+                'no_titles'         => false,
+                'show_full'         => false,
+                'excerpt_length'    => '',
+                'no_excerpt'        => false,
+            ), $atts),
+            $args = array(
+                /** clear variables defined by theme for widgets */
+                $before_widget  = '',
+                $after_widget   = '',
+                $before_title   = '',
+                $after_title    = '',
+            ) );
+        /** Get the_widget output and put into its own container */
+        $bnsft_content = ob_get_clean();
+
+        return $bnsft_content;
+    }
+
+
+    /** Function that registers our widget. */
+    function load_bnsft_widget() {
+        register_widget( 'BNS_Featured_Tag_Widget' );
+    }
+
+
+} // End class BNS_Featured_Tag_Widget
+
+
+/** @var $bnsft - instantiate the class */
+$bnsft = new BNS_Featured_Tag_Widget();

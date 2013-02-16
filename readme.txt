@@ -137,6 +137,10 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 Please stay current with your WordPress installation, your active theme, and your plugins.
 
 == Changelog ==
+= 2.3 =
+* Released February 2013
+* Moved all code into class structure
+
 = 2.2 =
 * Released December 2012
 * Added filter to full post link element
