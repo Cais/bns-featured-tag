@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.3
+Version: 2.3.1
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 Textdomain: bns-ft
@@ -23,7 +23,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @link        http://buynowshop.com/plugins/bns-featured-tag/
  * @link        https://github.com/Cais/bns-featured-tag/
  * @link        http://wordpress.org/extend/plugins/bns-featured-tag/
- * @version     2.3
+ * @version     2.3.1
  * @author      Edward Caissie <edward.caissie@gmail.com>
  * @copyright   Copyright (c) 2009-2013, Edward Caissie
  *
@@ -58,6 +58,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @version 2.3
  * @date    February 17, 2013
  * Added code block termination comments and other comments / documentation
+ * Fixed where content and excerpt post thumbnail sizes are used
  * Moved all code into class structure
  * Replace `query_posts` with new `WP_Query` class object
  *
@@ -232,6 +233,10 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
      *
      * @param   array $args
      * @param   array $instance
+     *
+     * @version 2.3.1
+     * @date    February 17, 2013
+     * Fixed where content and excerpt post thumbnail sizes are used
      */
     function widget( $args, $instance ) {
         extract( $args );
@@ -301,54 +306,88 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         } /** End if - show tag description */
 
         if ( $bnsft_query->have_posts()) : while ( $bnsft_query->have_posts() ) : $bnsft_query->the_post();
-            // static $count = 0; /* see above */
+
             if ( $count == $show_count ) {
                 break;
             } else { ?>
+
                 <div <?php post_class(); ?>>
+
                     <?php if ( ! $no_titles ) { ?>
                         <strong><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_title(); ?></a></strong>
                     <?php } ?>
+
                     <div class="post-details">
+
                         <?php if ( $show_meta ) {
                             echo apply_filters( 'bnsfc_show_meta', sprintf( __( 'by %1$s on %2$s', 'bns-fc' ), get_the_author(), get_the_time( get_option( 'date_format' ) ) ) ); ?><br />
-                        <?php }
+                        <?php } /** End if - show meta */
+
                         if ( ( $show_comments ) && ( ! post_password_required() ) ) {
                             comments_popup_link( __( 'with No Comments', 'bns-ft' ), __( 'with 1 Comment', 'bns-ft' ), __( 'with % Comments', 'bns-ft' ), '', __( 'with Comments Closed', 'bns-ft' ) ); ?><br />
-                        <?php }
+                        <?php } /** End if - show comments */
+
                         if ( $show_cats ) {
                             echo apply_filters( 'bnsfc_show_cats', sprintf( __( 'in %s', 'bns-fc' ), get_the_category_list( ', ' ) ) ); ?><br />
-                        <?php }
+                        <?php } /** End if - show categories */
+
                         if ( $show_tags ) {
                             the_tags( __( 'as ', 'bns-ft' ), ', ', '' ); ?><br />
-                        <?php } ?>
+                        <?php } /** End if - show tags */ ?>
+
                     </div> <!-- .post-details -->
+
                     <?php if ( ! $only_titles ) { ?>
+
                         <div class="bnsft-content">
+
                             <?php if ( $show_full ) {
-                            /** Conditions: Theme supports post-thumbnails -and- there is a post-thumbnail -and- the option to show the post thumbnail is checked */
-                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
-                                <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
-                            <?php the_content(); ?>
-                            <div class="bnsft-clear"></div>
-                            <?php wp_link_pages( array( 'before' => '<p><strong>' . __( 'Pages: ', 'bns-ft') . '</strong>', 'after' => '</p>', 'next_or_number' => 'number' ) );
-                        } elseif ( isset( $instance['excerpt_length']) && $instance['excerpt_length'] > 0 ) {
-                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
-                                <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
-                            <?php echo $this->bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
-                        } elseif ( ! $instance['no_excerpt'] ) {
-                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
-                                <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
-                                <?php the_excerpt();
-                        } else {
-                            if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) ?>
-                                <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
-                            <?php the_excerpt();
-                        } ?>
+
+                                /** Conditions: Theme supports post-thumbnails -and- there is a post-thumbnail -and- the option to show the post thumbnail is checked */
+                                if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) { ?>
+                                    <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
+                                <?php } /** End if  */
+
+                                the_content(); ?>
+
+                                <div class="bnsft-clear"></div>
+
+                                <?php wp_link_pages( array( 'before' => '<p><strong>' . __( 'Pages: ', 'bns-ft') . '</strong>', 'after' => '</p>', 'next_or_number' => 'number' ) );
+
+                            } elseif ( isset( $instance['excerpt_length']) && $instance['excerpt_length'] > 0 ) {
+
+                                if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) { ?>
+                                    <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
+                                <?php } /** End if */
+
+                                echo $this->bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
+
+                            } elseif ( ! $instance['no_excerpt'] ) {
+
+                                if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) { ?>
+                                    <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $excerpt_thumb, $excerpt_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
+                                <?php } /** End if */
+
+                                the_excerpt();
+
+                            } else {
+
+                                if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) { ?>
+                                    <a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-ft' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail( array( $content_thumb, $content_thumb ) , array( 'class' => 'alignleft' ) ); ?></a>
+                                <?php } /** End if */
+
+                                the_excerpt();
+
+                            } /** End if - show full */ ?>
+
                         </div> <!-- .bnsft-content -->
-                    <?php } ?>
+
+                    <?php } /** End if - not only titles */ ?>
+
                 </div> <!-- .post #post-ID -->
+
             <?php $count++;
+
             } /** End if - count */
 
         endwhile; else :
@@ -357,7 +396,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         endif; /** End if - have posts */
 
-        /** @var    $after_widget   string - defined by theme */
+        /** @var $after_widget string - defined by theme */
         echo $after_widget;
 
         wp_reset_postdata();
