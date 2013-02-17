@@ -2,7 +2,7 @@
  * This file is part of BNS Featured Tag
  * Last revised at version 2.2
  *
- * Copyright 2009-2012  Edward Caissie  (email : edward.caissie@gmail.com)
+ * Copyright 2009-2013  Edward Caissie  (email : edward.caissie@gmail.com)
  *
  * BNS Featured Category is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License, version 2, as

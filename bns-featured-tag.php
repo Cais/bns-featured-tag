@@ -56,7 +56,8 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Add posts offset option
  *
  * @version 2.3
- * @date    February 16, 2013
+ * @date    February 17, 2013
+ * Added code block termination comments and other comments / documentation
  * Moved all code into class structure
  * Replace `query_posts` with new `WP_Query` class object
  *
@@ -64,6 +65,10 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @todo Add Link to title option
  */
 class BNS_Featured_Tag_Widget extends WP_Widget {
+
+    /**
+     * Constructor
+     */
     function BNS_Featured_Tag_Widget() {
         /** Widget settings */
         $widget_ops = array( 'classname' => 'bns-featured-tag', 'description' => __( 'Displays most recent posts from a specific featured tag or tags.', 'bns-ft' ) );
@@ -83,8 +88,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
          */
         global $wp_version;
         $exit_message = 'BNS Featured Tag requires WordPress version 2.9 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>';
-        if ( version_compare( $wp_version, "2.9", "<") )
+        if ( version_compare( $wp_version, "2.9", "<") ) {
             exit ( $exit_message );
+        } /** End if - version compare */
 
         /** Add Scripts and Styles */
         add_action( 'wp_enqueue_scripts', array( $this, 'BNSFT_Scripts_and_Styles' ) );
@@ -98,7 +104,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         /** Add load_bnsft_widget function to the widgets_init hook */
         add_action( 'widgets_init', array( $this, 'load_bnsft_widget' ) );
 
-    }
+    } /** End function - constructor */
 
 
     /**
@@ -142,10 +148,13 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             array_pop( $words );
             array_push( $words, '...' );
             $text = implode( ' ', $words );
-        }
+        } /** End if - not length */
+
         $text .= $bnsft_link;
+
         return $text;
-    }
+
+    } /** End function - custom excerpt */
 
 
     /**
@@ -180,8 +189,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), $bnsft_data['Version'], 'screen' );
         if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-custom-style.css' ) ) {
             wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
-        }
-    }
+        } /** End if - is readable */
+
+    } /** End function - scripts and styles */
 
 
     /**
@@ -212,10 +222,17 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         wp_enqueue_style( 'BNSFT-Option-Style', plugin_dir_url( __FILE__ ) . 'bnsft-option-style.css', array(), $bnsft_data['Version'], 'screen' );
         if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-options-custom-style.css' ) ) {
             wp_enqueue_style( 'BNSFT-Options-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-options-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
-        }
-    }
+        } /** End if - is readable */
+
+    } /** End function - options scripts and styles */
 
 
+    /**
+     * Widget
+     *
+     * @param   array $args
+     * @param   array $instance
+     */
     function widget( $args, $instance ) {
         extract( $args );
 
@@ -246,10 +263,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         echo $before_widget;
 
         /** Widget $title $before_widget and $after_widget defined by theme */
-        if ( $title )
+        if ( $title ) {
             /** @var    $before_title   string - defined by theme */
             /** @var    $after_title    string - defined by theme */
             echo $before_title . $title . $after_title;
+        } /** End if - title */
 
         /** Display posts from widget settings */
         /** Replace spaces with hyphens to create tag slugs from the name */
@@ -273,14 +291,15 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 'offset'            => $offset,
                 'order'             => $sort_order
             );
-        }
+        } /** End if - sort order */
 
         /** @var $bnsft_query - New query object to hold specific posts */
         $bnsft_query = new WP_Query( $query_args );
 
         if ( $show_tag_desc ) {
             echo '<div class="bnsft-tag-desc">' . tag_description() . '</div>';
-        }
+        } /** End if - show tag description */
+
         if ( $bnsft_query->have_posts()) : while ( $bnsft_query->have_posts() ) : $bnsft_query->the_post();
             // static $count = 0; /* see above */
             if ( $count == $show_count ) {
@@ -330,17 +349,30 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                     <?php } ?>
                 </div> <!-- .post #post-ID -->
             <?php $count++;
-            }
+            } /** End if - count */
+
         endwhile; else :
+
             _e( 'Yes, we have no bananas, or posts, today.', 'bns-ft' );
-        endif;
+
+        endif; /** End if - have posts */
 
         /** @var    $after_widget   string - defined by theme */
         echo $after_widget;
 
         wp_reset_postdata();
-    }
 
+    } /** End function - widget */
+
+
+    /**
+     * Update
+     *
+     * @param   array $new_instance
+     * @param   array $old_instance
+     *
+     * @return  array
+     */
     function update( $new_instance, $old_instance ) {
         $instance = $old_instance;
 
@@ -368,8 +400,17 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $instance['count']          = $new_instance['count'];
 
         return $instance;
-    }
 
+    } /** End function - update */
+
+
+    /**
+     * Form
+     *
+     * @param   array $instance
+     *
+     * @return  string|void
+     */
     function form( $instance ) {
         /** Set up default widget settings */
         $defaults = array(
@@ -531,7 +572,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['no_excerpt'], true ); ?> id="<?php echo $this->get_field_id( 'no_excerpt' ); ?>" name="<?php echo $this->get_field_name( 'no_excerpt' ); ?>" />
         </p>
 
-    <?php }
+    <?php
+    } /** End function - form */
 
 
     /**
@@ -596,16 +638,20 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $bnsft_content = ob_get_clean();
 
         return $bnsft_content;
-    }
+
+    } /** End function - shortcode */
 
 
-    /** Function that registers our widget. */
+    /**
+     * Load Widget
+     * Register widget
+     */
     function load_bnsft_widget() {
         register_widget( 'BNS_Featured_Tag_Widget' );
-    }
+    } /** End function - register widget */
 
 
-} // End class BNS_Featured_Tag_Widget
+} /** End class BNS_Featured_Tag_Widget */
 
 
 /** @var $bnsft - instantiate the class */

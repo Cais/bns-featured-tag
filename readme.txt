@@ -139,6 +139,7 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 2.3 =
 * Released February 2013
+* Added code block termination comments and other comments / documentation
 * Moved all code into class structure
 * Replace `query_posts` with new `WP_Query` class object
 
