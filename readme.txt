@@ -3,8 +3,8 @@ Contributors: cais
 Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, widget-only
 Requires at least: 2.9
-Tested up to: 3.5
-Stable tag: 2.2
+Tested up to: 3.5.1
+Stable tag: 2.3
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -113,7 +113,7 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 1. The options panel (default settings).
 
 == Other Notes ==
-  Copyright 2009-2012  Edward Caissie  (email : edward.caissie@gmail.com)
+  Copyright 2009-2013  Edward Caissie  (email : edward.caissie@gmail.com)
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2,
@@ -135,6 +135,12 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 
 == Upgrade Notice ==
 Please stay current with your WordPress installation, your active theme, and your plugins.
+
+= Version 2.3 Changelog =
+* Released February 2013;
+* Added code block termination comments and other comments / documentation;
+* Moved all code into class structure;
+* Replace `query_posts` with new `WP_Query` class object.
 
 == Changelog ==
 = 2.3 =
@@ -231,7 +237,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * updated license declaration
 
 = 1.6.3 =
-* removed the_ID() function as redundant
+* removed `the_ID()` function as redundant
 
 = 1.6.2.3 =
 * compatible with WordPress version 2.9.2
@@ -268,11 +274,11 @@ Please stay current with your WordPress installation, your active theme, and you
 
 = 1.2 =
 * code clean up
-* changed the_content(__('Read more ...')) to the_content() as a more "default" version
+* changed `the_content(__('Read more ...'))` to `the_content()` as a more "default" version
 
 = 1.1 =
 * added option for Post Titles only
-* added <div style="overflow-x: auto"> wrapper to allow for images wider than the widget area
+* added `div style="overflow-x: auto"` wrapper to allow for images wider than the widget area
 
 = 1.0 =
 * Initial Release.
