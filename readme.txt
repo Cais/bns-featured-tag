@@ -4,7 +4,7 @@ Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, widget-only
 Requires at least: 2.9
 Tested up to: 3.5.1
-Stable tag: 2.3
+Stable tag: 2.3.1
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -136,13 +136,17 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 == Upgrade Notice ==
 Please stay current with your WordPress installation, your active theme, and your plugins.
 
-= Version 2.3 Changelog =
-* Released February 2013;
-* Added code block termination comments and other comments / documentation;
-* Moved all code into class structure;
-* Replace `query_posts` with new `WP_Query` class object.
+= Version 2.3.1 Changelog =
+* Released February 17, 2013
+* Fixed where content and excerpt post thumbnail sizes are used
+* Fixed conditional check for post thumbnails usage
 
 == Changelog ==
+= 2.3.1 =
+* Released February 17, 2013
+* Fixed where content and excerpt post thumbnail sizes are used
+* Fixed conditional check for post thumbnails usage
+
 = 2.3 =
 * Released February 2013
 * Added code block termination comments and other comments / documentation

@@ -58,9 +58,13 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @version 2.3
  * @date    February 17, 2013
  * Added code block termination comments and other comments / documentation
- * Fixed where content and excerpt post thumbnail sizes are used
  * Moved all code into class structure
  * Replace `query_posts` with new `WP_Query` class object
+ *
+ * @version 2.3.1
+ * @date    February 17, 2013
+ * Fixed where content and excerpt post thumbnail sizes are used
+ * Fixed conditional check for post thumbnails usage
  *
  * @todo Finish "use current" option
  * @todo Add Link to title option
