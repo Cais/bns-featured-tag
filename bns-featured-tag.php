@@ -60,8 +60,9 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
  * @version 2.4
  * @date    July 14, 2013
+ * Added feature as requested http://wordpress.org/support/topic/is-it-possible-to-exclude-current-post
+ * Completed use current post tags in single view option / functionality
  *
- * @todo Finish "use current" option
  * @todo Add Link to title option
  */
 class BNS_Featured_Tag_Widget extends WP_Widget {
@@ -236,6 +237,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
      * @version 2.3.1
      * @date    February 17, 2013
      * Fixed where content and excerpt post thumbnail sizes are used
+     *
+     * @version 2.4
+     * @date    July 14, 2013
+     * Added exclude current post option
+     * Completed use current post tags option
      */
     function widget( $args, $instance ) {
         extract( $args );
@@ -274,7 +280,18 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             echo $before_title . $title . $after_title;
         } /** End if - title */
 
-        /** Display posts from widget settings */
+        /** Use current post tag(s) when in single view */
+        if ( is_single() && $use_current ) {
+            /** Get the global post object to find the tags */
+            global $post;
+            /** @var $tag_choice - clear current choice(s) */
+            $tag_choice = '';
+            /** Loop through current post tags and add them to tag choice */
+            foreach( get_the_tags( $post->ID ) as $current_tag ) {
+                $tag_choice .= $current_tag->name . ', ';
+            } /** End foreach - get the tags */
+        } /** End if - is single and use current */
+
         /** Replace spaces with hyphens to create tag slugs from the name */
         $tag_choice = str_replace( ' ', '-', $tag_choice );
 
@@ -284,7 +301,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         /** Do not include current post in single view */
         if ( is_single() && $exclude_current ) {
             $excluded_post = get_the_ID();
-        }
+        } /** End if - is single and exclude current */
 
         /** Check if $sort_order is set to rand (random) and use the `orderby` parameter; otherwise use the `order` parameter */
         if ( 'rand' == $sort_order ) {
@@ -312,6 +329,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             echo '<div class="bnsft-tag-desc">' . tag_description() . '</div>';
         } /** End if - show tag description */
 
+        /** Display posts from widget settings */
         if ( $bnsft_query->have_posts()) : while ( $bnsft_query->have_posts() ) : $bnsft_query->the_post();
 
             if ( $count == $show_count ) {
@@ -406,6 +424,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         /** @var $after_widget string - defined by theme */
         echo $after_widget;
 
+        /** Make sure to clean up after ourselves */
         wp_reset_postdata();
 
     } /** End function - widget */
@@ -661,7 +680,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             $instance = shortcode_atts( array(
                 'title'             => __( 'Featured Tag', 'bns-ft' ),
                 'tag_choice'        => '',
-                'use_current'       => false, /** Will not change anything if set to true, yet */
+                'use_current'       => false, /** Beta */
                 'exclude_current'   => false, /** Beta */
                 'count'             => '0',
                 'show_count'        => '3',

@@ -140,6 +140,7 @@ Please stay current with your WordPress installation, your active theme, and you
 = 2.4 =
 * Released July 2013
 * Add exclude current post in single view option
+* Completed use current post tags in single view option / functionality
 
 = 2.3.1 =
 * Released February 17, 2013
