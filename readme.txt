@@ -139,6 +139,7 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 2.4 =
 * Released July 2013
+* Add exclude current post in single view option
 
 = 2.3.1 =
 * Released February 17, 2013

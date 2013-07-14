@@ -244,6 +244,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $title          = apply_filters( 'widget_title', $instance['title'] );
         $tag_choice     = $instance['tag_choice'];
         $use_current    = $instance['use_current'];
+        $exclude_current    = $instance['exclude_current'];
         $show_count     = $instance['show_count'];
         $offset         = $instance['offset'];
         $sort_order     = $instance['sort_order'];
@@ -280,20 +281,27 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         /** Remove leading hyphens from tag slugs if multiple tag names are entered with leading spaces */
         $tag_choice = str_replace( ',-', ', ', $tag_choice );
 
+        /** Do not include current post in single view */
+        if ( is_single() && $exclude_current ) {
+            $excluded_post = get_the_ID();
+        }
+
         /** Check if $sort_order is set to rand (random) and use the `orderby` parameter; otherwise use the `order` parameter */
         if ( 'rand' == $sort_order ) {
             $query_args = array(
                 'tag'               => $tag_choice,
                 'posts_per_page'    => $show_count,
                 'offset'            => $offset,
-                'orderby'           => $sort_order
+                'orderby'           => $sort_order,
+                'post__not_in'      => array( $excluded_post )
             );
         } else {
             $query_args = array(
                 'tag'               => $tag_choice,
                 'posts_per_page'    => $show_count,
                 'offset'            => $offset,
-                'order'             => $sort_order
+                'order'             => $sort_order,
+                'post__not_in'      => array( $excluded_post )
             );
         } /** End if - sort order */
 
@@ -418,6 +426,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $instance['title']          = strip_tags( $new_instance['title'] );
         $instance['tag_choice']	  	= strip_tags( $new_instance['tag_choice'] );
         $instance['use_current']    = $new_instance['use_current'];
+        $instance['exclude_current']    = $new_instance['exclude_current'];
         $instance['show_count']     = $new_instance['show_count'];
         $instance['offset']         = $new_instance['offset'];
         $instance['sort_order']     = $new_instance['sort_order'];
@@ -455,6 +464,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             'title'             => __( 'Featured Tag', 'bns-ft' ),
             'tag_choice'        => '',
             'use_current'       => false,
+            'exclude_current'   => false,
             'count'             => '0',
             'show_count'        => '3',
             'offset'            => '0',
@@ -493,6 +503,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         <p>
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['use_current'], true ); ?> id="<?php echo $this->get_field_id( 'use_current' ); ?>" name="<?php echo $this->get_field_name( 'use_current' ); ?>" />
             <label for="<?php echo $this->get_field_id( 'use_current' ); ?>"><?php _e( '(beta) Use current tag in single view?', 'bns-ft' ); ?></label>
+        </p>
+
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['exclude_current'], true ); ?> id="<?php echo $this->get_field_id( 'exclude_current' ); ?>" name="<?php echo $this->get_field_name( 'exclude_current' ); ?>" />
+            <label for="<?php echo $this->get_field_id( 'exclude_current' ); ?>"><?php _e( '(beta) Exclude the current post in single view?', 'bns-ft' ); ?></label>
         </p>
 
         <table class="bnsft-counts">
@@ -647,6 +662,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
                 'title'             => __( 'Featured Tag', 'bns-ft' ),
                 'tag_choice'        => '',
                 'use_current'       => false, /** Will not change anything if set to true, yet */
+                'exclude_current'   => false, /** Beta */
                 'count'             => '0',
                 'show_count'        => '3',
                 'offset'            => '',
