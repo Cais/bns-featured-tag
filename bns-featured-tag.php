@@ -241,28 +241,28 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         extract( $args );
 
         /** User-selected settings */
-        $title          = apply_filters( 'widget_title', $instance['title'] );
-        $tag_choice     = $instance['tag_choice'];
-        $use_current    = $instance['use_current'];
-        $exclude_current    = $instance['exclude_current'];
-        $show_count     = $instance['show_count'];
-        $offset         = $instance['offset'];
-        $sort_order     = $instance['sort_order'];
-        $use_thumbnails = $instance['use_thumbnails'];
-        $content_thumb  = $instance['content_thumb'];
-        $excerpt_thumb  = $instance['excerpt_thumb'];
-        $show_meta      = $instance['show_meta'];
-        $show_comments  = $instance['show_comments'];
-        $show_cats      = $instance['show_cats'];
-        $show_tags      = $instance['show_tags'];
-        $show_tag_desc  = $instance['show_tag_desc'];
-        $only_titles    = $instance['only_titles'];
-        $no_titles      = $instance['no_titles'];
-        $show_full      = $instance['show_full'];
-        $excerpt_length = $instance['excerpt_length'];
-        $no_excerpt     = $instance['no_excerpt'];
+        $title           = apply_filters( 'widget_title', $instance['title'] );
+        $tag_choice      = $instance['tag_choice'];
+        $use_current     = $instance['use_current'];
+        $exclude_current = $instance['exclude_current'];
+        $show_count      = $instance['show_count'];
+        $offset          = $instance['offset'];
+        $sort_order      = $instance['sort_order'];
+        $use_thumbnails  = $instance['use_thumbnails'];
+        $content_thumb   = $instance['content_thumb'];
+        $excerpt_thumb   = $instance['excerpt_thumb'];
+        $show_meta       = $instance['show_meta'];
+        $show_comments   = $instance['show_comments'];
+        $show_cats       = $instance['show_cats'];
+        $show_tags       = $instance['show_tags'];
+        $show_tag_desc   = $instance['show_tag_desc'];
+        $only_titles     = $instance['only_titles'];
+        $no_titles       = $instance['no_titles'];
+        $show_full       = $instance['show_full'];
+        $excerpt_length  = $instance['excerpt_length'];
+        $no_excerpt      = $instance['no_excerpt'];
         /** Plugin requires counter variable to be part of its arguments?! */
-        $count          = $instance['count'];
+        $count           = $instance['count'];
 
         /** @var    $before_widget  string - defined by theme */
         echo $before_widget;
@@ -423,28 +423,28 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $instance = $old_instance;
 
         /** Strip tags (if needed) and update the widget settings */
-        $instance['title']          = strip_tags( $new_instance['title'] );
-        $instance['tag_choice']	  	= strip_tags( $new_instance['tag_choice'] );
-        $instance['use_current']    = $new_instance['use_current'];
-        $instance['exclude_current']    = $new_instance['exclude_current'];
-        $instance['show_count']     = $new_instance['show_count'];
-        $instance['offset']         = $new_instance['offset'];
-        $instance['sort_order']     = $new_instance['sort_order'];
-        $instance['use_thumbnails']	= $new_instance['use_thumbnails'];
-        $instance['content_thumb']	= $new_instance['content_thumb'];
-        $instance['excerpt_thumb']	= $new_instance['excerpt_thumb'];
-        $instance['show_meta']      = $new_instance['show_meta'];
-        $instance['show_comments']	= $new_instance['show_comments'];
-        $instance['show_cats']      = $new_instance['show_cats'];
-        $instance['show_tags']      = $new_instance['show_tags'];
-        $instance['show_tag_desc']	= $new_instance['show_tag_desc'];
-        $instance['only_titles']  	= $new_instance['only_titles'];
-        $instance['no_titles']      = $new_instance['no_titles'];
-        $instance['show_full']      = $new_instance['show_full'];
-        $instance['excerpt_length']	= $new_instance['excerpt_length'];
-        $instance['no_excerpt']     = $new_instance['no_excerpt'];
+        $instance['title']           = strip_tags( $new_instance['title'] );
+        $instance['tag_choice']	  	 = strip_tags( $new_instance['tag_choice'] );
+        $instance['use_current']     = $new_instance['use_current'];
+        $instance['exclude_current'] = $new_instance['exclude_current'];
+        $instance['show_count']      = $new_instance['show_count'];
+        $instance['offset']          = $new_instance['offset'];
+        $instance['sort_order']      = $new_instance['sort_order'];
+        $instance['use_thumbnails']	 = $new_instance['use_thumbnails'];
+        $instance['content_thumb']	 = $new_instance['content_thumb'];
+        $instance['excerpt_thumb']	 = $new_instance['excerpt_thumb'];
+        $instance['show_meta']       = $new_instance['show_meta'];
+        $instance['show_comments']	 = $new_instance['show_comments'];
+        $instance['show_cats']       = $new_instance['show_cats'];
+        $instance['show_tags']       = $new_instance['show_tags'];
+        $instance['show_tag_desc']	 = $new_instance['show_tag_desc'];
+        $instance['only_titles']  	 = $new_instance['only_titles'];
+        $instance['no_titles']       = $new_instance['no_titles'];
+        $instance['show_full']       = $new_instance['show_full'];
+        $instance['excerpt_length']	 = $new_instance['excerpt_length'];
+        $instance['no_excerpt']      = $new_instance['no_excerpt'];
         /** added to be able to reset count to zero for every instance of the plugin */
-        $instance['count']          = $new_instance['count'];
+        $instance['count']           = $new_instance['count'];
 
         return $instance;
 
