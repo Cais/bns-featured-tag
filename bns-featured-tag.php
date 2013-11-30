@@ -132,7 +132,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $link_symbol = apply_filters( 'bnsft_link_symbol', '&infin;' );
 
         /** Create link to full post for end of custom length excerpt output */
-        $bnsft_link = ' <strong><a class="bnsft-link" href="' . get_permalink() . '" title="' . the_title_attribute( array( 'before' => __( 'Permalink to: ', 'bns-ft' ), 'after' => '', 'echo' => false ) ) . '">' . $link_symbol . '</a></strong>';
+        $bnsft_link = ' <strong>
+            <a class="bnsft-link" href="' . get_permalink() . '" title="' . the_title_attribute( array( 'before' => __( 'Permalink to: ', 'bns-ft' ), 'after' => '', 'echo' => false ) ) . '">'
+                . $link_symbol .
+            '</a>
+        </strong>';
 
         if ( ( ! $length ) || ( count( $words ) < $length ) ) {
             $text .= $bnsft_link;
@@ -314,8 +318,15 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             );
         } /** End if - sort order */
 
-        /** @var $bnsft_query - New query object to hold specific posts */
-        $bnsft_query = new WP_Query( $query_args );
+        /** @var $bnsft_query - object of posts matching query criteria */
+        $bnsft_query = false;
+
+        /** Allow query to be completely over-written via `bnsfc_query` hook */
+        apply_filters( 'bnsft_query', $bnsft_query );
+
+        if ( false == $bnsft_query ) {
+            $bnsft_query = new WP_Query( $query_args );
+        } /** End if - bnsfc query is false, use plugin arguments */
 
         if ( $show_tag_desc ) {
             echo '<div class="bnsft-tag-desc">' . tag_description() . '</div>';
