@@ -3,8 +3,8 @@ Contributors: cais
 Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, widget-only
 Requires at least: 2.9
-Tested up to: 3.6
-Stable tag: 2.4
+Tested up to: 3.8
+Stable tag: 2.4.1
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -137,6 +137,10 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 Please stay current with your WordPress installation, your active theme, and your plugins.
 
 == Changelog ==
+= 2.4.1 =
+* Released ...
+* Add BNSFT Plugin Meta function
+
 = 2.4 =
 * Released July 2013
 * Add exclude current post in single view option

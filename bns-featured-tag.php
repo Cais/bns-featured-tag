@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.4
+Version: 2.4.1
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 Textdomain: bns-ft
@@ -23,7 +23,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @link        http://buynowshop.com/plugins/bns-featured-tag/
  * @link        https://github.com/Cais/bns-featured-tag/
  * @link        http://wordpress.org/extend/plugins/bns-featured-tag/
- * @version     2.4
+ * @version     2.4.1
  * @author      Edward Caissie <edward.caissie@gmail.com>
  * @copyright   Copyright (c) 2009-2013, Edward Caissie
  *
@@ -47,21 +47,13 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * The license for this software can also likely be found here:
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * @version 2.3
- * @date    February 17, 2013
- * Added code block termination comments and other comments / documentation
- * Moved all code into class structure
- * Replace `query_posts` with new `WP_Query` class object
- *
- * @version 2.3.1
- * @date    February 17, 2013
- * Fixed where content and excerpt post thumbnail sizes are used
- * Fixed conditional check for post thumbnails usage
- *
  * @version 2.4
  * @date    July 14, 2013
  * Added feature as requested http://wordpress.org/support/topic/is-it-possible-to-exclude-current-post
  * Completed use current post tags in single view option / functionality
+ *
+ * @version 2.4.1
+ * @date    November 2013
  *
  * @todo Add Link to title option
  */
@@ -729,3 +721,36 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 /** @var $bnsft - instantiate the class */
 $bnsft = new BNS_Featured_Tag_Widget();
+
+
+/**
+ * BNSFT Plugin Meta
+ * Adds additional links to plugin meta links
+ *
+ * @package BNS_Featured_Tag
+ * @since   2.4.1
+ *
+ * @uses    __
+ * @uses    plugin_basename
+ *
+ * @param   $links
+ * @param   $file
+ *
+ * @return  array $links
+ */
+function bnsft_plugin_meta( $links, $file ) {
+
+    $plugin_file = plugin_basename( __FILE__ );
+
+    if ( $file == $plugin_file ) {
+
+        $links[] = '<a href="https://github.com/Cais/BNS-Featured-Tag">' . __( 'Fork on Github', 'bns-ft' ) . '</a>';
+
+    } /** End if - file is the same as plugin */
+
+    return $links;
+
+} /** End function - plugin meta */
+
+/** Add Plugin Row Meta details */
+add_filter( 'plugin_row_meta', 'bnsft_plugin_meta', 10, 2 );
