@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.4.1
+Version: 2.5
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 Textdomain: bns-ft
@@ -23,7 +23,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @link        http://buynowshop.com/plugins/bns-featured-tag/
  * @link        https://github.com/Cais/bns-featured-tag/
  * @link        http://wordpress.org/extend/plugins/bns-featured-tag/
- * @version     2.4.1
+ * @version     2.5
  * @author      Edward Caissie <edward.caissie@gmail.com>
  * @copyright   Copyright (c) 2009-2013, Edward Caissie
  *
@@ -54,6 +54,10 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
  * @version 2.4.1
  * @date    November 2013
+ *
+ * @version 2.5
+ * @date    ...
+ * Added new "union" option so posts must be in all tags chosen
  *
  * @todo Add Link to title option
  */
@@ -243,28 +247,29 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         extract( $args );
 
         /** User-selected settings */
-        $title           = apply_filters( 'widget_title', $instance['title'] );
-        $tag_choice      = $instance['tag_choice'];
-        $use_current     = $instance['use_current'];
-        $exclude_current = $instance['exclude_current'];
-        $show_count      = $instance['show_count'];
-        $offset          = $instance['offset'];
-        $sort_order      = $instance['sort_order'];
-        $use_thumbnails  = $instance['use_thumbnails'];
-        $content_thumb   = $instance['content_thumb'];
-        $excerpt_thumb   = $instance['excerpt_thumb'];
-        $show_meta       = $instance['show_meta'];
-        $show_comments   = $instance['show_comments'];
-        $show_cats       = $instance['show_cats'];
-        $show_tags       = $instance['show_tags'];
-        $show_tag_desc   = $instance['show_tag_desc'];
-        $only_titles     = $instance['only_titles'];
-        $no_titles       = $instance['no_titles'];
-        $show_full       = $instance['show_full'];
-        $excerpt_length  = $instance['excerpt_length'];
-        $no_excerpt      = $instance['no_excerpt'];
+        $title              = apply_filters( 'widget_title', $instance['title'] );
+        $tag_choice         = $instance['tag_choice'];
+        $union              = $instance['union'];
+        $use_current        = $instance['use_current'];
+        $exclude_current    = $instance['exclude_current'];
+        $show_count         = $instance['show_count'];
+        $offset             = $instance['offset'];
+        $sort_order         = $instance['sort_order'];
+        $use_thumbnails     = $instance['use_thumbnails'];
+        $content_thumb      = $instance['content_thumb'];
+        $excerpt_thumb      = $instance['excerpt_thumb'];
+        $show_meta          = $instance['show_meta'];
+        $show_comments      = $instance['show_comments'];
+        $show_cats          = $instance['show_cats'];
+        $show_tags          = $instance['show_tags'];
+        $show_tag_desc      = $instance['show_tag_desc'];
+        $only_titles        = $instance['only_titles'];
+        $no_titles          = $instance['no_titles'];
+        $show_full          = $instance['show_full'];
+        $excerpt_length     = $instance['excerpt_length'];
+        $no_excerpt         = $instance['no_excerpt'];
         /** Plugin requires counter variable to be part of its arguments?! */
-        $count           = $instance['count'];
+        $count              = $instance['count'];
 
         /** @var    $before_widget  string - defined by theme */
         echo $before_widget;
@@ -299,24 +304,46 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             $excluded_post = get_the_ID();
         } /** End if - is single and exclude current */
 
-        /** Check if $sort_order is set to rand (random) and use the `orderby` parameter; otherwise use the `order` parameter */
+        /** @var array $query_args - holds query arguments to be passed */
+        $query_args = array(
+            'tag'               => $tag_choice,
+            'posts_per_page'    => $show_count,
+            'offset'            => $offset,
+            'post__not_in'      => array( $excluded_post )
+        );
+
+        /**
+         * Check if $sort_order is set to rand (random) and use the `orderby`
+         * parameter; otherwise use the `order` parameter
+         */
         if ( 'rand' == $sort_order ) {
-            $query_args = array(
-                'tag'               => $tag_choice,
-                'posts_per_page'    => $show_count,
-                'offset'            => $offset,
-                'orderby'           => $sort_order,
-                'post__not_in'      => array( $excluded_post )
-            );
+            $query_args = array_merge( $query_args, array( 'orderby' => $sort_order ) );
         } else {
-            $query_args = array(
-                'tag'               => $tag_choice,
-                'posts_per_page'    => $show_count,
-                'offset'            => $offset,
-                'order'             => $sort_order,
-                'post__not_in'      => array( $excluded_post )
-            );
-        } /** End if - sort order */
+            $query_args = array_merge( $query_args, array( 'order' => $sort_order ) );
+        } /** End if - set query argument parameter */
+
+        /**
+         * Check if post need to be in *all* tags and make necessary
+         * changes to the data so it can be correctly used
+         */
+        if ( $union ) {
+
+            /** Remove the default use any tag parameter */
+            unset( $query_args['tag'] );
+
+            /** @var string $tag_choice - tag choices without spaces */
+            $tag_choice = preg_replace( '/\s+/', '', $tag_choice );
+            /** @var array $tag_choice_union - derived from the string */
+            $tag_choice_union = explode( ",", $tag_choice );
+
+            /** Sanity testing? - Change strings to integer values */
+            foreach ( $tag_choice_union AS $index => $value )
+                $tag_choice[$index] = (int)$value;
+
+            /** @var array $query_args - merged new query arguments */
+            $query_args = array_merge( $query_args, array( 'tag__and' => $tag_choice_union ) );
+
+        } /** End if - do we want to use a union of the categories */
 
         /** @var $bnsft_query - object of posts matching query criteria */
         $bnsft_query = false;
@@ -455,28 +482,29 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $instance = $old_instance;
 
         /** Strip tags (if needed) and update the widget settings */
-        $instance['title']           = strip_tags( $new_instance['title'] );
-        $instance['tag_choice']	  	 = strip_tags( $new_instance['tag_choice'] );
-        $instance['use_current']     = $new_instance['use_current'];
-        $instance['exclude_current'] = $new_instance['exclude_current'];
-        $instance['show_count']      = $new_instance['show_count'];
-        $instance['offset']          = $new_instance['offset'];
-        $instance['sort_order']      = $new_instance['sort_order'];
-        $instance['use_thumbnails']	 = $new_instance['use_thumbnails'];
-        $instance['content_thumb']	 = $new_instance['content_thumb'];
-        $instance['excerpt_thumb']	 = $new_instance['excerpt_thumb'];
-        $instance['show_meta']       = $new_instance['show_meta'];
-        $instance['show_comments']	 = $new_instance['show_comments'];
-        $instance['show_cats']       = $new_instance['show_cats'];
-        $instance['show_tags']       = $new_instance['show_tags'];
-        $instance['show_tag_desc']	 = $new_instance['show_tag_desc'];
-        $instance['only_titles']  	 = $new_instance['only_titles'];
-        $instance['no_titles']       = $new_instance['no_titles'];
-        $instance['show_full']       = $new_instance['show_full'];
-        $instance['excerpt_length']	 = $new_instance['excerpt_length'];
-        $instance['no_excerpt']      = $new_instance['no_excerpt'];
+        $instance['title']              = strip_tags( $new_instance['title'] );
+        $instance['tag_choice']         = strip_tags( $new_instance['tag_choice'] );
+        $instance['union']              = $new_instance['union'];
+        $instance['use_current']        = $new_instance['use_current'];
+        $instance['exclude_current']    = $new_instance['exclude_current'];
+        $instance['show_count']         = $new_instance['show_count'];
+        $instance['offset']             = $new_instance['offset'];
+        $instance['sort_order']         = $new_instance['sort_order'];
+        $instance['use_thumbnails']     = $new_instance['use_thumbnails'];
+        $instance['content_thumb']      = $new_instance['content_thumb'];
+        $instance['excerpt_thumb']      = $new_instance['excerpt_thumb'];
+        $instance['show_meta']          = $new_instance['show_meta'];
+        $instance['show_comments']      = $new_instance['show_comments'];
+        $instance['show_cats']          = $new_instance['show_cats'];
+        $instance['show_tags']          = $new_instance['show_tags'];
+        $instance['show_tag_desc']      = $new_instance['show_tag_desc'];
+        $instance['only_titles']        = $new_instance['only_titles'];
+        $instance['no_titles']          = $new_instance['no_titles'];
+        $instance['show_full']          = $new_instance['show_full'];
+        $instance['excerpt_length']     = $new_instance['excerpt_length'];
+        $instance['no_excerpt']         = $new_instance['no_excerpt'];
         /** added to be able to reset count to zero for every instance of the plugin */
-        $instance['count']           = $new_instance['count'];
+        $instance['count']              = $new_instance['count'];
 
         return $instance;
 
@@ -495,6 +523,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         $defaults = array(
             'title'             => __( 'Featured Tag', 'bns-ft' ),
             'tag_choice'        => '',
+            'union'             => false,
             'use_current'       => false,
             'exclude_current'   => false,
             'count'             => '0',
@@ -525,6 +554,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         <p>
             <label for="<?php echo $this->get_field_id( 'tag_choice' ); ?>"><?php _e( 'Tag Names, separated by commas:', 'bns-ft' ); ?></label>
             <input class="widefat" type="text" id="<?php echo $this->get_field_id( 'tag_choice' ); ?>" name="<?php echo $this->get_field_name( 'tag_choice' ); ?>" value="<?php echo $instance['tag_choice']; ?>" />
+        </p>
+
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['union'], true ); ?> id="<?php echo $this->get_field_id( 'union' ); ?>" name="<?php echo $this->get_field_name( 'union' ); ?>" />
+            <label for="<?php echo $this->get_field_id( 'union' ); ?>"><?php _e( '<strong>ONLY</strong> show posts that have <strong>ALL</strong> Tags', 'bns-ft' ); ?></label>
         </p>
 
         <p>
@@ -693,8 +727,9 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             $instance = shortcode_atts( array(
                 'title'             => __( 'Featured Tag', 'bns-ft' ),
                 'tag_choice'        => '',
-                'use_current'       => false, /** Beta */
-                'exclude_current'   => false, /** Beta */
+                'union'             => false,
+                'use_current'       => false,
+                'exclude_current'   => false,
                 'count'             => '0',
                 'show_count'        => '3',
                 'offset'            => '',

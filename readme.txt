@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: cais
 Donate link: http://buynowshop.com
-Tags: posts, tags, featured, multi-widget, user-options, widget-only
+Tags: posts, tags, featured, multi-widget, user-options, shortcode
 Requires at least: 2.9
 Tested up to: 3.8
-Stable tag: 2.4.1
+Stable tag: 2.5
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -54,26 +54,28 @@ Reading this article for further assistance: http://wpfirstaid.com/2009/12/plugi
 = Shortcode: bnsft =
 Default Parameters:
 
-* 'title'             => 'Featured Tag'
-* 'tag_choice'        => ''
-* 'use_current'       => ''
-* 'count'             => '0'
-* 'show_count'        => '3'
-* 'offset'            => ''
-* 'sort_order'        => 'DESC'
-* 'use_thumbnails'    => true
-* 'content_thumb'     => '100'
-* 'excerpt_thumb'     => '50'
-* 'show_tag_desc'     => false
-* 'show_meta'         => false
-* 'show_comments'     => false
-* 'show_cats'         => false
-* 'show_tags'         => false
-* 'only_titles'       => false
-* 'no_titles'         => false
-* 'show_full'         => false
-* 'excerpt_length'    => ''
-* 'no_excerpt'        => false
+* 'title'           => 'Featured Tag'
+* 'tag_choice'      => ''
+* 'union'           => false
+* 'use_current'     => false
+* 'exclude_current' => false
+* 'count'           => '0'
+* 'show_count'      => '3'
+* 'offset'          => ''
+* 'sort_order'      => 'DESC'
+* 'use_thumbnails'  => true
+* 'content_thumb'   => '100'
+* 'excerpt_thumb'   => '50'
+* 'show_tag_desc'   => false
+* 'show_meta'       => false
+* 'show_comments'   => false
+* 'show_cats'       => false
+* 'show_tags'       => false
+* 'only_titles'     => false
+* 'no_titles'       => false
+* 'show_full'       => false
+* 'excerpt_length'  => ''
+* 'no_excerpt'      => false
 
 == Frequently Asked Questions ==
 = Where can I get support for this plugin? =
@@ -137,8 +139,10 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 Please stay current with your WordPress installation, your active theme, and your plugins.
 
 == Changelog ==
+= 2.5 =
+* Added new "union" option so posts must be in all tags chosen
+
 = 2.4.1 =
-* Released ...
 * Add BNSFT Plugin Meta function
 * Add hook `bnsft_query` allowing the query arguments to be over-written
 * Add hook `bnsft_output` allowing the entire output to be over-written
