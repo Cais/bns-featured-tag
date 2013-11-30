@@ -4,7 +4,7 @@ Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, shortcode
 Requires at least: 2.9
 Tested up to: 3.8
-Stable tag: 2.5
+Stable tag: 2.5-alpha
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
