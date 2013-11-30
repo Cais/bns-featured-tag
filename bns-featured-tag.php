@@ -299,18 +299,18 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
         /** Remove leading hyphens from tag slugs if multiple tag names are entered with leading spaces */
         $tag_choice = str_replace( ',-', ', ', $tag_choice );
 
-        /** Do not include current post in single view */
-        if ( is_single() && $exclude_current ) {
-            $excluded_post = get_the_ID();
-        } /** End if - is single and exclude current */
-
         /** @var array $query_args - holds query arguments to be passed */
         $query_args = array(
             'tag'               => $tag_choice,
             'posts_per_page'    => $show_count,
-            'offset'            => $offset,
-            'post__not_in'      => array( $excluded_post )
+            'offset'            => $offset
         );
+
+        /** Do not include current post in single view */
+        if ( is_single() && $exclude_current ) {
+            $excluded_post = get_the_ID();
+            $query_args = array_merge( $query_args, array( 'post__not_in' => array( $excluded_post ) ) );
+        } /** End if - is single and exclude current */
 
         /**
          * Check if $sort_order is set to rand (random) and use the `orderby`
@@ -558,7 +558,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         <p>
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['union'], true ); ?> id="<?php echo $this->get_field_id( 'union' ); ?>" name="<?php echo $this->get_field_name( 'union' ); ?>" />
-            <label for="<?php echo $this->get_field_id( 'union' ); ?>"><?php _e( '<strong>ONLY</strong> show posts that have <strong>ALL</strong> Tags', 'bns-ft' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'union' ); ?>"><?php _e( '<em>(beta)</em> <strong>ONLY</strong> show posts that have <strong>ALL</strong> Tags<br />You <strong>MUST</strong> use Tag <em>ID</em>s not Names for this option!', 'bns-ft' ); ?></label>
         </p>
 
         <p>
@@ -568,12 +568,12 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         <p>
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['use_current'], true ); ?> id="<?php echo $this->get_field_id( 'use_current' ); ?>" name="<?php echo $this->get_field_name( 'use_current' ); ?>" />
-            <label for="<?php echo $this->get_field_id( 'use_current' ); ?>"><?php _e( '(beta) Use current tag in single view?', 'bns-ft' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'use_current' ); ?>"><?php _e( '<em>(beta)</em> Use current tag in single view?', 'bns-ft' ); ?></label>
         </p>
 
         <p>
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['exclude_current'], true ); ?> id="<?php echo $this->get_field_id( 'exclude_current' ); ?>" name="<?php echo $this->get_field_name( 'exclude_current' ); ?>" />
-            <label for="<?php echo $this->get_field_id( 'exclude_current' ); ?>"><?php _e( '(beta) Exclude the current post in single view?', 'bns-ft' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'exclude_current' ); ?>"><?php _e( '<em>(beta)</em> Exclude the current post in single view?', 'bns-ft' ); ?></label>
         </p>
 
         <table class="bnsft-counts">

@@ -140,7 +140,8 @@ Please stay current with your WordPress installation, your active theme, and you
 
 == Changelog ==
 = 2.5 =
-* Added new "union" option so posts must be in all tags chosen
+* Add new "union" option so posts must be in all tags chosen
+* Add emphasis text for 'beta' options
 
 = 2.4.1 =
 * Add BNSFT Plugin Meta function
