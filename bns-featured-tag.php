@@ -558,7 +558,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         <p>
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['union'], true ); ?> id="<?php echo $this->get_field_id( 'union' ); ?>" name="<?php echo $this->get_field_name( 'union' ); ?>" />
-            <label for="<?php echo $this->get_field_id( 'union' ); ?>"><?php _e( '<em>(beta)</em> <strong>ONLY</strong> show posts that have <strong>ALL</strong> Tags<br />You <strong>MUST</strong> use Tag <em>ID</em>s not Names for this option!', 'bns-ft' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'union' ); ?>"><?php _e( '<em>(beta)</em> <strong>ONLY</strong> show posts that have <strong>ALL</strong> of the Tag IDs (You <strong>MUST</strong> only use <em>Tag IDs</em> in the Tag Names field above.)', 'bns-ft' ); ?></label>
         </p>
 
         <p>
