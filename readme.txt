@@ -140,7 +140,8 @@ Please stay current with your WordPress installation, your active theme, and you
 = 2.4.1 =
 * Released ...
 * Add BNSFT Plugin Meta function
-* Add hook `bnsfc_query` allowing the query arguments to be over-written
+* Add hook `bnsft_query` allowing the query arguments to be over-written
+* Add hook `bnsft_output` allowing the entire output to be over-written
 
 = 2.4 =
 * Released July 2013
