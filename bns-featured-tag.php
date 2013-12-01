@@ -276,8 +276,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         /** Widget $title $before_widget and $after_widget defined by theme */
         if ( $title ) {
-            /** @var    $before_title   string - defined by theme */
-            /** @var    $after_title    string - defined by theme */
+            /** @var string $before_title - defined by theme */
+            /** @var string $after_title - defined by theme */
             echo $before_title . $title . $after_title;
         } /** End if - title */
 
@@ -331,19 +331,29 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
             /** Remove the default use any tag parameter */
             unset( $query_args['tag'] );
 
-            /** @var string $tag_choice - tag choices without spaces */
-            $tag_choice = preg_replace( '/\s+/', '', $tag_choice );
+            /** @var string $union_tag_choice - $tag_choice without spaces */
+            $union_tag_choice = preg_replace( '/\s+/', '', $tag_choice );
             /** @var array $tag_choice_union - derived from the string */
-            $tag_choice_union = explode( ",", $tag_choice );
+            $tag_choice_union = explode( ",", $union_tag_choice );
 
             /** Sanity testing? - Change strings to integer values */
             foreach ( $tag_choice_union AS $index => $value )
-                $tag_choice[$index] = (int)$value;
+                $tag_choice_union[$index] = (int)$value;
 
             /** @var array $query_args - merged new query arguments */
             $query_args = array_merge( $query_args, array( 'tag__and' => $tag_choice_union ) );
 
         } /** End if - do we want to use a union of the categories */
+
+        if ( is_single() && $union ) {
+
+            /** Remove the use all tags parameter */
+            unset( $query_args['tag__and'] );
+
+            /** @var array $query_args - add the all tags parameter back */
+            $query_args = array_merge( $query_args, array( 'tag' => $tag_choice ) );
+
+        } /** End if - is single and union */
 
         /** @var $bnsft_query - object of posts matching query criteria */
         $bnsft_query = false;
@@ -568,12 +578,12 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
         <p>
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['use_current'], true ); ?> id="<?php echo $this->get_field_id( 'use_current' ); ?>" name="<?php echo $this->get_field_name( 'use_current' ); ?>" />
-            <label for="<?php echo $this->get_field_id( 'use_current' ); ?>"><?php _e( '<em>(beta)</em> Use current tag in single view?', 'bns-ft' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'use_current' ); ?>"><?php _e( 'Use current tag(s) in single view?<br />Recommended if using "...ALL of the Tag IDs" option above.', 'bns-ft' ); ?></label>
         </p>
 
         <p>
             <input class="checkbox" type="checkbox" <?php checked( (bool) $instance['exclude_current'], true ); ?> id="<?php echo $this->get_field_id( 'exclude_current' ); ?>" name="<?php echo $this->get_field_name( 'exclude_current' ); ?>" />
-            <label for="<?php echo $this->get_field_id( 'exclude_current' ); ?>"><?php _e( '<em>(beta)</em> Exclude the current post in single view?', 'bns-ft' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'exclude_current' ); ?>"><?php _e( 'Exclude current post in single view?', 'bns-ft' ); ?></label>
         </p>
 
         <table class="bnsft-counts">
