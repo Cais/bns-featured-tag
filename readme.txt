@@ -3,8 +3,8 @@ Contributors: cais
 Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, shortcode
 Requires at least: 2.9
-Tested up to: 3.8
-Stable tag: 2.5
+Tested up to: 3.9
+Stable tag: 2.6
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -115,7 +115,7 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 1. The options panel (default settings).
 
 == Other Notes ==
-  Copyright 2009-2013  Edward Caissie  (email : edward.caissie@gmail.com)
+  Copyright 2009-2014  Edward Caissie  (email : edward.caissie@gmail.com)
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2,
@@ -139,6 +139,10 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 Please stay current with your WordPress installation, your active theme, and your plugins.
 
 == Changelog ==
+= 2.6 =
+* Released ...
+* Reformat code to better meet WordPress Coding Standards
+
 = 2.5 =
 * Add new "union" option so posts must be in all tags chosen
 * Add emphasis text for 'beta' options

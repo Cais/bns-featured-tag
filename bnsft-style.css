@@ -1,7 +1,7 @@
 /*  This file is part of BNS Featured Tag
     Last revised at version 1.9
 
-    Copyright 2011-2013  Edward Caissie  (email : edward.caissie@gmail.com)
+    Copyright 2011-2014  Edward Caissie  (email : edward.caissie@gmail.com)
 
     BNS Featured Tag is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as
@@ -24,7 +24,15 @@ a.bnsft-link:link,
 a.bnsft-link:visited,
 a.bnsft-link:hover,
 a.bnsft-link:focus,
-a.bnsft-link:active { font-size: 125%; text-decoration: none; }
+a.bnsft-link:active {
+	font-size: 125%;
+	text-decoration: none;
+}
 
-.bnsft-content { overflow-x: auto; }
-.bnsft-clear { clear: both; }
+.bnsft-content {
+	overflow-x: auto;
+}
+
+.bnsft-clear {
+	clear: both;
+}
