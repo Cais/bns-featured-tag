@@ -2,7 +2,7 @@
 Contributors: cais
 Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, shortcode
-Requires at least: 2.9
+Requires at least: 3.6
 Tested up to: 3.9
 Stable tag: 2.6
 License: GNU General Public License v2
@@ -142,6 +142,7 @@ Please stay current with your WordPress installation, your active theme, and you
 = 2.6 =
 * Released ...
 * Reformat code to better meet WordPress Coding Standards
+* Update required version to WordPress 3.6
 
 = 2.5 =
 * Add new "union" option so posts must be in all tags chosen

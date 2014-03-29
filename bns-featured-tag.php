@@ -60,6 +60,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
  * @version     2.6
  * @date        March 2014
+ * Update required version to WordPress 3.6
  *
  * @todo        Add Link to title option
  */
@@ -83,17 +84,15 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 		/**
 		 * Check installed WordPress version for compatibility
-		 * @internal    Requires WordPress version 2.9
-		 * @internal    @uses current_theme_supports
-		 * @internal    @uses the_post_thumbnail
-		 * @internal    @uses has_post_thumbnail
+		 * @internal    Requires WordPress version 3.6
+		 * @internal    @uses shortcode_atts with optional shortcode filter parameter
 		 */
 		global $wp_version;
-		$exit_message = 'BNS Featured Tag requires WordPress version 2.9 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>';
-		if ( version_compare( $wp_version, "2.9", "<" ) ) {
+		$exit_message = 'BNS Featured Tag requires WordPress version 3.6 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>';
+		if ( version_compare( $wp_version, "3.6", "<" ) ) {
 			exit ( $exit_message );
 		}
-		/** End if - version compare */
+		/** End if */
 
 		/** Add Scripts and Styles */
 		add_action(
@@ -960,7 +959,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 					'show_full'       => false,
 					'excerpt_length'  => '',
 					'no_excerpt'      => false,
-				), $atts
+				), $atts, 'bnsft'
 			),
 			$args = array(
 				/** clear variables defined by theme for widgets */
