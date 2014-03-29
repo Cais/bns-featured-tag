@@ -273,14 +273,19 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * @param   array $args
 	 * @param   array $instance
 	 *
-	 * @version 2.3.1
-	 * @date    February 17, 2013
+	 * @version    2.3.1
+	 * @date       February 17, 2013
 	 * Fixed where content and excerpt post thumbnail sizes are used
 	 *
-	 * @version 2.4
-	 * @date    July 14, 2013
+	 * @version    2.4
+	 * @date       July 14, 2013
 	 * Added exclude current post option
 	 * Completed use current post tags option
+	 *
+	 * @version    2.6
+	 * @date       March 29, 2014
+	 * Added `bnsft_no_posts_message` filter hook
+	 * Added `bnsft-no-posts-message` and `bnsft-widget-title` classes
 	 */
 	function widget( $args, $instance ) {
 		extract( $args );
