@@ -141,6 +141,8 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 2.6 =
 * Released ...
+* Updated inline documentation
+* Changed "Tag Name" label to "Tag slug/ID" with additional details
 * Reformat code to better meet WordPress Coding Standards
 * Update required version to WordPress 3.6
 

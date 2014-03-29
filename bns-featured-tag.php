@@ -622,8 +622,22 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 	/**
 	 * Form
+	 * The plugin form found in the widget options panel. This is where the
+	 * various settings are entered.
+	 *
+	 * @package    BNS_Featured_Tag
+	 * @since      1.0
 	 *
 	 * @param   array $instance
+	 *
+	 * @uses       WP_Widget::get_field_ID
+	 * @uses       WP_Widget::get_field_name
+	 * @uses       __
+	 * @uses       _e
+	 * @uses       checked
+	 * @uses       current_theme_supports
+	 * @uses       selected
+	 * @uses       wp_parse_args
 	 *
 	 * @return  string|void
 	 */
@@ -666,7 +680,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 		<p>
 			<label
-				for="<?php echo $this->get_field_id( 'tag_choice' ); ?>"><?php _e( 'Tag Names, separated by commas:', 'bns-ft' ); ?></label>
+				for="<?php echo $this->get_field_id( 'tag_choice' ); ?>"><?php _e( 'Tag slug/ID (must only use one or the other), separated by commas:', 'bns-ft' ); ?></label>
 			<input class="widefat" type="text"
 				   id="<?php echo $this->get_field_id( 'tag_choice' ); ?>"
 				   name="<?php echo $this->get_field_name( 'tag_choice' ); ?>"
