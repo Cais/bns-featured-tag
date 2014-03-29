@@ -317,7 +317,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		if ( $title ) {
 			/** @var string $before_title - defined by theme */
 			/** @var string $after_title - defined by theme */
-			echo $before_title . $title . $after_title;
+			echo $before_title . '<span class="bnsft-widget-title">' . $title . '</span>' . $after_title;
 		}
 		/** End if - title */
 
