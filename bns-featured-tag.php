@@ -110,6 +110,14 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 			)
 		);
 
+		/** Add Plugin Row Meta details */
+		add_filter(
+			'plugin_row_meta', array(
+				$this,
+				'bnsft_plugin_meta'
+			), 10, 2
+		);
+
 		/** Add Shortcode */
 		add_shortcode( 'bnsft', array( $this, 'bnsft_shortcode' ) );
 
@@ -1001,6 +1009,52 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	/** End function - register widget */
 
 
+	/**
+	 * BNSFT Plugin Meta
+	 * Adds additional links to plugin meta links
+	 *
+	 * @package    BNS_Featured_Tag
+	 * @since      2.4.1
+	 *
+	 * @uses       __
+	 * @uses       plugin_basename
+	 *
+	 * @param   $links
+	 * @param   $file
+	 *
+	 * @return  array $links
+	 *
+	 * @version    2.6
+	 * @date       March 15, 2014
+	 * Moved into main class of plugin
+	 * Added a "wish link"
+	 * Added a "support link"
+	 */
+	function bnsft_plugin_meta( $links, $file ) {
+
+		$plugin_file = plugin_basename( __FILE__ );
+
+		if ( $file == $plugin_file ) {
+
+			$links = array_merge(
+				$links, array(
+					'fork_link'    => '<a href="https://github.com/Cais/BNS-Featured-Tag">' . __( 'Fork on GitHub', 'bns-fc' ) . '</a>',
+					'wish_link'    => '<a href="http://www.amazon.ca/registry/wishlist/2NNNE1PAQIRUL">' . __( 'Grant a wish?', 'bns-fc' ) . '</a>',
+					'support_link' => '<a href="http://wordpress.org/support/plugin/bns-featured-tag">' . __( 'WordPress Support Forums', 'bns-fc' ) . '</a>'
+				)
+			);
+
+		}
+
+		/** End if - file is the same as plugin */
+
+		return $links;
+
+	}
+
+	/** End function - plugin meta */
+
+
 }
 
 /** End class BNS_Featured_Tag_Widget */
@@ -1008,40 +1062,3 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 /** @var $bnsft - instantiate the class */
 $bnsft = new BNS_Featured_Tag_Widget();
-
-
-/**
- * BNSFT Plugin Meta
- * Adds additional links to plugin meta links
- *
- * @package BNS_Featured_Tag
- * @since   2.4.1
- *
- * @uses    __
- * @uses    plugin_basename
- *
- * @param   $links
- * @param   $file
- *
- * @return  array $links
- */
-function bnsft_plugin_meta( $links, $file ) {
-
-	$plugin_file = plugin_basename( __FILE__ );
-
-	if ( $file == $plugin_file ) {
-
-		$links[] = '<a href="https://github.com/Cais/BNS-Featured-Tag">' . __( 'Fork on Github', 'bns-ft' ) . '</a>';
-
-	}
-
-	/** End if - file is the same as plugin */
-
-	return $links;
-
-}
-
-/** End function - plugin meta */
-
-/** Add Plugin Row Meta details */
-add_filter( 'plugin_row_meta', 'bnsft_plugin_meta', 10, 2 );
