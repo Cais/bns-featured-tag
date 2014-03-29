@@ -141,12 +141,13 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 2.6 =
 * Released ...
+* Added a "wish link" and "support_link" to the plugin meta row
 * Changed "Tag Name" label to "Tag slug/ID" with additional details
+* Extracted `plugin_data` into its own method
+* Moved BNSFT Plugin Meta function into main class of plugin
 * Reformat code to better meet WordPress Coding Standards
 * Update required version to WordPress 3.6
 * Updated inline documentation
-* Added a "wish link" and "support_link" to the plugin meta row
-* Moved BNSFT Plugin Meta function into main class of plugin
 
 = 2.5 =
 * Add new "union" option so posts must be in all tags chosen

@@ -192,29 +192,31 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	/**
 	 * Enqueue Plugin Scripts and Styles
 	 *
-	 * @package  BNS_Featured_Tag
-	 * @since    1.9
+	 * @package    BNS_Featured_Tag
+	 * @since      1.9
 	 *
-	 * @uses     get_plugin_data
-	 * @uses     plugin_dir_path
-	 * @uses     plugin_dir_url
-	 * @uses     wp_enqueue_style
+	 * @uses       get_plugin_data
+	 * @uses       plugin_dir_path
+	 * @uses       plugin_dir_url
+	 * @uses       wp_enqueue_style
 	 *
-	 * @internal Used with action: wp_enqueue_styles
+	 * @internal   Used with action: wp_enqueue_styles
 	 *
-	 * @version  1.9.1
-	 * @date     December 14, 2011
+	 * @version    1.9.1
+	 * @date       December 14, 2011
 	 * Fixed 404 error when 'bnsft-custom-style.css' is not available
 	 *
-	 * @version  2.2
-	 * @date     December 1, 2012
+	 * @version    2.2
+	 * @date       December 1, 2012
 	 * Programmatically add version number to enqueue calls
+	 *
+	 * @version    2.6
+	 * @date       March 29, 2014
+	 * Extracted `plugin_data` into its own method
 	 */
 	function BNSFT_Scripts_and_Styles() {
-		/** Call the wp-admin plugin code */
-		require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
-		/** @var $bnsfc_data - holds the plugin header data */
-		$bnsft_data = get_plugin_data( __FILE__ );
+
+		$bnsft_data = $this->plugin_data();
 
 		/** Enqueue Scripts */
 		/** Enqueue Styles */
@@ -232,25 +234,29 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 *
 	 * Add plugin options scripts and stylesheet(s) to be used only on the Administration Panels
 	 *
-	 * @package  BNS_Featured_Category
-	 * @since    2.0
+	 * @package    BNS_Featured_Tag
+	 * @since      2.0
 	 *
-	 * @uses     plugin_dir_path
-	 * @uses     plugin_dir_url
-	 * @uses     wp_enqueue_script
-	 * @uses     wp_enqueue_style
+	 * @uses       BNS_Featured_Tag_Widget::plugin_data
+	 * @uses       plugin_dir_path
+	 * @uses       plugin_dir_url
+	 * @uses       wp_enqueue_script
+	 * @uses       wp_enqueue_style
 	 *
-	 * @internal 'jQuery' is enqueued as a dependency of the 'bnsft-options.js' enqueue
-	 * @internal Used with action: admin_enqueue_scripts
+	 * @internal   'jQuery' is enqueued as a dependency of the 'bnsft-options.js' enqueue
+	 * @internal   Used with action: admin_enqueue_scripts
+	 *
+	 * @version    2.6
+	 * @date       March 29, 2014
+	 * Extracted `plugin_data` into its own method
 	 */
 	function BNSFT_Options_Scripts_and_Styles() {
-		/** Call the wp-admin plugin code */
-		require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
-		/** @var $bnsfc_data - holds the plugin header data */
-		$bnsft_data = get_plugin_data( __FILE__ );
+
+		$bnsft_data = $this->plugin_data();
 
 		/** Enqueue Options Scripts */
 		wp_enqueue_script( 'bnsft-options', plugin_dir_url( __FILE__ ) . 'bnsft-options.js', array( 'jquery' ), $bnsft_data['Version'] );
+
 		/** Enqueue Options Style Sheets */
 		wp_enqueue_style( 'BNSFT-Option-Style', plugin_dir_url( __FILE__ ) . 'bnsft-option-style.css', array(), $bnsft_data['Version'], 'screen' );
 		if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-options-custom-style.css' ) ) {
@@ -1000,16 +1006,6 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 
 	/**
-	 * Load Widget
-	 * Register widget
-	 */
-	function load_bnsft_widget() {
-		register_widget( 'BNS_Featured_Tag_Widget' );
-	}
-	/** End function - register widget */
-
-
-	/**
 	 * BNSFT Plugin Meta
 	 * Adds additional links to plugin meta links
 	 *
@@ -1050,9 +1046,38 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 		return $links;
 
-	}
+	} /** End function - plugin meta */
 
-	/** End function - plugin meta */
+
+	/**
+	 * Plugin Data
+	 * Returns the plugin header data as an array
+	 *
+	 * @package    BNS_Featured_Tag
+	 * @since      2.6
+	 *
+	 * @uses       get_plugin_data
+	 *
+	 * @return array
+	 */
+	function plugin_data() {
+		/** Call the wp-admin plugin code */
+		require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+		/** @var $plugin_data - holds the plugin header data */
+		$plugin_data = get_plugin_data( __FILE__ );
+
+		return $plugin_data;
+	} /** End function - plugin data */
+
+
+	/**
+	 * Load Widget
+	 * Register widget
+	 */
+	function load_bnsft_widget() {
+		register_widget( 'BNS_Featured_Tag_Widget' );
+	}
+	/** End function - register widget */
 
 
 }
