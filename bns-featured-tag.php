@@ -576,7 +576,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 			endwhile;
 			else :
 
-				_e( 'Yes, we have no bananas, or posts, today.', 'bns-ft' );
+				apply_filters( 'bnsft_no_posts_message', '<span class="bnsft-no-posts-message">' . __( 'Yes, we have no bananas, or posts, today.', 'bns-ft' ) . '</span>' );
 
 			endif;
 			/** End if - have posts */
