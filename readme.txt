@@ -150,6 +150,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * Changed "Tag Name" label to "Tag slug/ID" with additional details
 * Defined constants `BNS_CUSTOM_PATH` and `BNS_CUSTOM_URL`
 * Extracted `plugin_data` into its own method
+* Fixed sort order implementation
 * Moved BNSFT Plugin Meta function into main class of plugin
 * Reformat code to better meet WordPress Coding Standards
 * Update required version to WordPress 3.6

@@ -689,6 +689,10 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * @uses       wp_parse_args
 	 *
 	 * @return  string|void
+	 *
+	 * @version	2.6
+	 * @date	May 31, 2014
+	 * Fixed sort order implementation
 	 */
 	function form( $instance ) {
 		/** Set up default widget settings */
@@ -807,14 +811,14 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 							id="<?php echo $this->get_field_id( 'sort_order' ); ?>"
 							name="<?php echo $this->get_field_name( 'sort_order' ); ?>"
 							style="width:85%;">
-							<option <?php selected( 'asc', $instance['sort_order'], true ); ?>>
-								asc
+							<option value="asc" <?php selected( 'asc', $instance['sort_order'], true ); ?>>
+								<?php _e( 'Ascending', 'bns-ft' ); ?>
 							</option>
-							<option <?php selected( 'desc', $instance['sort_order'], true ); ?>>
-								desc
+							<option value="desc" <?php selected( 'desc', $instance['sort_order'], true ); ?>>
+								<?php _e( 'Descending', 'bns-ft' ); ?>
 							</option>
-							<option <?php selected( 'rand', $instance['sort_order'], true ); ?>>
-								rand
+							<option value="rand" <?php selected( 'rand', $instance['sort_order'], true ); ?>>
+								<?php _e( 'Random', 'bns-ft' ); ?>
 							</option>
 						</select>
 					</p>
@@ -1008,7 +1012,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 					'count'           => '0',
 					'show_count'      => '3',
 					'offset'          => '',
-					'sort_order'      => 'DESC',
+					'sort_order'      => 'desc',
 					'use_thumbnails'  => true,
 					'content_thumb'   => '100',
 					'excerpt_thumb'   => '50',
