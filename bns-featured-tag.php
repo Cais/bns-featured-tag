@@ -47,14 +47,6 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * The license for this software can also likely be found here:
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * @version     2.4
- * @date        July 14, 2013
- * Added feature as requested http://wordpress.org/support/topic/is-it-possible-to-exclude-current-post
- * Completed use current post tags in single view option / functionality
- *
- * @version     2.4.1
- * @date        November 2013
- *
  * @version     2.5
  * Added new "union" option so posts must be in all tags chosen
  *
@@ -217,7 +209,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 *
 	 * @uses    (constant) BNS_CUSTOM_PATH
 	 * @uses    (constant) BNS_CUSTOM_URL
-	 * @uses               get_plugin_data
+	 * @uses               BNS_Featured_Tag_Widget::plugin_data
 	 * @uses               plugin_dir_path
 	 * @uses               plugin_dir_url
 	 * @uses               wp_enqueue_style
@@ -251,7 +243,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 		/** For custom stylesheets in the /wp-content/bns-custom/ folder */
 		if ( is_readable( BNS_CUSTOM_PATH . 'bnsft-custom-style.css' ) ) {
-			wp_enqueue_style( 'BNS-Featured-Tag-Custom-Style', BNS_CUSTOM_URL . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
+			wp_enqueue_style( 'BNSFT-Custom-Style', BNS_CUSTOM_URL . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
 		}
 		/** End if - is readable */
 
@@ -263,20 +255,23 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 *
 	 * Add plugin options scripts and stylesheet(s) to be used only on the Administration Panels
 	 *
-	 * @package    BNS_Featured_Tag
-	 * @since      2.0
+	 * @package            BNS_Featured_Tag
+	 * @since              2.0
 	 *
-	 * @uses       BNS_Featured_Tag_Widget::plugin_data
-	 * @uses       plugin_dir_path
-	 * @uses       plugin_dir_url
-	 * @uses       wp_enqueue_script
-	 * @uses       wp_enqueue_style
+	 * @uses    (constant) BNS_CUSTOM_PATH
+	 * @uses    (constant) BNS_CUSTOM_URL
+	 * @uses               BNS_Featured_Tag_Widget::plugin_data
+	 * @uses               plugin_dir_path
+	 * @uses               plugin_dir_url
+	 * @uses               wp_enqueue_script
+	 * @uses               wp_enqueue_style
 	 *
-	 * @internal   'jQuery' is enqueued as a dependency of the 'bnsft-options.js' enqueue
-	 * @internal   Used with action: admin_enqueue_scripts
+	 * @internal           'jQuery' is enqueued as a dependency of the 'bnsft-options.js' enqueue
+	 * @internal           Used with action: admin_enqueue_scripts
 	 *
-	 * @version    2.6
-	 * @date       March 29, 2014
+	 * @version            2.6
+	 * @date               May 31, 2014
+	 * Added upgrade safe path location for custom styles
 	 * Extracted `plugin_data` into its own method
 	 */
 	function BNSFT_Options_Scripts_and_Styles() {
@@ -290,6 +285,12 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		wp_enqueue_style( 'BNSFT-Option-Style', plugin_dir_url( __FILE__ ) . 'bnsft-option-style.css', array(), $bnsft_data['Version'], 'screen' );
 		if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-options-custom-style.css' ) ) {
 			wp_enqueue_style( 'BNSFT-Options-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-options-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
+		}
+		/** End if - is readable */
+
+		/** For custom stylesheets in the /wp-content/bns-custom/ folder */
+		if ( is_readable( BNS_CUSTOM_PATH . 'bnsft-options-custom-style.css' ) ) {
+			wp_enqueue_style( 'BNSFT-Options-Custom-Style', BNS_CUSTOM_URL . 'bnsft-options-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
 		}
 		/** End if - is readable */
 
