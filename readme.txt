@@ -4,7 +4,7 @@ Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, shortcode
 Requires at least: 3.6
 Tested up to: 3.9.1
-Stable tag: 2.6
+Stable tag: 2.7-alpha
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -141,6 +141,9 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 Please stay current with your WordPress installation, your active theme, and your plugins.
 
 == Changelog ==
+= 2.7 =
+* Released ...
+
 = 2.6 =
 * Released May 2014
 * Added a "wish link" and "support_link" to the plugin meta row
