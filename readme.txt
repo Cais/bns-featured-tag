@@ -3,7 +3,7 @@ Contributors: cais
 Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, shortcode
 Requires at least: 3.6
-Tested up to: 3.9
+Tested up to: 3.9.1
 Stable tag: 2.6
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -146,7 +146,9 @@ Please stay current with your WordPress installation, your active theme, and you
 * Added a "wish link" and "support_link" to the plugin meta row
 * Added `bnsft_no_posts_message` hook
 * Added `bnsft-no-posts-message` and `bnsft-widget-title` classes
+* Added upgrade safe path location for custom styles
 * Changed "Tag Name" label to "Tag slug/ID" with additional details
+* Defined constants `BNS_CUSTOM_PATH` and `BNS_CUSTOM_URL`
 * Extracted `plugin_data` into its own method
 * Moved BNSFT Plugin Meta function into main class of plugin
 * Reformat code to better meet WordPress Coding Standards

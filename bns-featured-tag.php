@@ -67,9 +67,31 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 class BNS_Featured_Tag_Widget extends WP_Widget {
 
 	/**
-	 * Constructor
+	 * Constructor - BNS Featured Tag Widget
+	 * The factory extension
+	 *
+	 * @package         BNS_Featured_Tag
+	 * @since           1.0
+	 *
+	 * @uses    (class) WP_Widget
+	 * @uses            __
+	 * @uses            add_action
+	 * @uses            add_filter
+	 * @uses            add_shortcode
 	 */
 	function BNS_Featured_Tag_Widget() {
+		/**
+		 * Check installed WordPress version for compatibility
+		 * @internal    Requires WordPress version 3.6
+		 * @internal    @uses shortcode_atts with optional shortcode filter parameter
+		 */
+		global $wp_version;
+		$exit_message = __( 'BNS Featured Tag requires WordPress version 3.6 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>', 'bns-ft' );
+		if ( version_compare( $wp_version, "3.6", "<" ) ) {
+			exit ( $exit_message );
+		}
+		/** End if - version compare */
+
 		/** Widget settings */
 		$widget_ops = array(
 			'classname'   => 'bns-featured-tag',
@@ -82,17 +104,15 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		/** Create the widget */
 		$this->WP_Widget( 'bns-featured-tag', 'BNS Featured Tag', $widget_ops, $control_ops );
 
-		/**
-		 * Check installed WordPress version for compatibility
-		 * @internal    Requires WordPress version 3.6
-		 * @internal    @uses shortcode_atts with optional shortcode filter parameter
-		 */
-		global $wp_version;
-		$exit_message = 'BNS Featured Tag requires WordPress version 3.6 or newer. <a href="http://codex.wordpress.org/Upgrading_WordPress">Please Update!</a>';
-		if ( version_compare( $wp_version, "3.6", "<" ) ) {
-			exit ( $exit_message );
+		/** Define location for BNS plugin customizations */
+		if ( ! defined( 'BNS_CUSTOM_PATH' ) ) {
+			define( 'BNS_CUSTOM_PATH', WP_CONTENT_DIR . '/bns-customs/' );
 		}
-		/** End if */
+		/** end if - not defined */
+		if ( ! defined( 'BNS_CUSTOM_URL' ) ) {
+			define( 'BNS_CUSTOM_URL', content_url( '/bns-customs/' ) );
+		}
+		/** end if - not defined */
 
 		/** Add Scripts and Styles */
 		add_action(
@@ -192,27 +212,30 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	/**
 	 * Enqueue Plugin Scripts and Styles
 	 *
-	 * @package    BNS_Featured_Tag
-	 * @since      1.9
+	 * @package            BNS_Featured_Tag
+	 * @since              1.9
 	 *
-	 * @uses       get_plugin_data
-	 * @uses       plugin_dir_path
-	 * @uses       plugin_dir_url
-	 * @uses       wp_enqueue_style
+	 * @uses    (constant) BNS_CUSTOM_PATH
+	 * @uses    (constant) BNS_CUSTOM_URL
+	 * @uses               get_plugin_data
+	 * @uses               plugin_dir_path
+	 * @uses               plugin_dir_url
+	 * @uses               wp_enqueue_style
 	 *
-	 * @internal   Used with action: wp_enqueue_styles
+	 * @internal           Used with action: wp_enqueue_styles
 	 *
-	 * @version    1.9.1
-	 * @date       December 14, 2011
+	 * @version            1.9.1
+	 * @date               December 14, 2011
 	 * Fixed 404 error when 'bnsft-custom-style.css' is not available
 	 *
-	 * @version    2.2
-	 * @date       December 1, 2012
+	 * @version            2.2
+	 * @date               December 1, 2012
 	 * Programmatically add version number to enqueue calls
 	 *
-	 * @version    2.6
-	 * @date       March 29, 2014
+	 * @version            2.6
+	 * @date               May 31, 2014
 	 * Extracted `plugin_data` into its own method
+	 * Added upgrade safe path location for custom styles
 	 */
 	function BNSFT_Scripts_and_Styles() {
 
@@ -223,6 +246,12 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		wp_enqueue_style( 'BNSFT-Style', plugin_dir_url( __FILE__ ) . 'bnsft-style.css', array(), $bnsft_data['Version'], 'screen' );
 		if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-custom-style.css' ) ) {
 			wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
+		}
+		/** End if - is readable */
+
+		/** For custom stylesheets in the /wp-content/bns-custom/ folder */
+		if ( is_readable( BNS_CUSTOM_PATH . 'bnsft-custom-style.css' ) ) {
+			wp_enqueue_style( 'BNS-Featured-Tag-Custom-Style', BNS_CUSTOM_URL . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
 		}
 		/** End if - is readable */
 
