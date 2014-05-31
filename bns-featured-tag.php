@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.6-alpha
+Version: 2.6
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 Textdomain: bns-ft
@@ -51,7 +51,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Added new "union" option so posts must be in all tags chosen
  *
  * @version     2.6
- * @date        March 2014
+ * @date        May 2014
  * Update required version to WordPress 3.6
  *
  * @todo        Add Link to title option
@@ -690,9 +690,10 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 *
 	 * @return  string|void
 	 *
-	 * @version	2.6
-	 * @date	May 31, 2014
+	 * @version    2.6
+	 * @date       May 31, 2014
 	 * Fixed sort order implementation
+	 * Moved inline options styles into "options" stylesheet
 	 */
 	function form( $instance ) {
 		/** Set up default widget settings */
@@ -785,8 +786,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 						<input type="text"
 							   id="<?php echo $this->get_field_id( 'show_count' ); ?>"
 							   name="<?php echo $this->get_field_name( 'show_count' ); ?>"
-							   value="<?php echo $instance['show_count']; ?>"
-							   style="width:85%;" />
+							   value="<?php echo $instance['show_count']; ?>" />
 					</p>
 				</td>
 				<td>
@@ -796,8 +796,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 						<input type="text"
 							   id="<?php echo $this->get_field_id( 'offset' ); ?>"
 							   name="<?php echo $this->get_field_name( 'offset' ); ?>"
-							   value="<?php echo $instance['offset']; ?>"
-							   style="width:85%;" />
+							   value="<?php echo $instance['offset']; ?>" />
 					</p>
 				</td>
 			</tr>
@@ -809,8 +808,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 							for="<?php echo $this->get_field_id( 'sort_order' ); ?>"><?php _e( 'Sort Order:', 'bns-ft' ); ?></label>
 						<select
 							id="<?php echo $this->get_field_id( 'sort_order' ); ?>"
-							name="<?php echo $this->get_field_name( 'sort_order' ); ?>"
-							style="width:85%;">
+							name="<?php echo $this->get_field_name( 'sort_order' ); ?>">
 							<option value="asc" <?php selected( 'asc', $instance['sort_order'], true ); ?>>
 								<?php _e( 'Ascending', 'bns-ft' ); ?>
 							</option>

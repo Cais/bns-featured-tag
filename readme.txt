@@ -142,7 +142,7 @@ Please stay current with your WordPress installation, your active theme, and you
 
 == Changelog ==
 = 2.6 =
-* Released ...
+* Released May 2014
 * Added a "wish link" and "support_link" to the plugin meta row
 * Added `bnsft_no_posts_message` hook
 * Added `bnsft-no-posts-message` and `bnsft-widget-title` classes
@@ -152,6 +152,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * Extracted `plugin_data` into its own method
 * Fixed sort order implementation
 * Moved BNSFT Plugin Meta function into main class of plugin
+* Moved inline options styles into "options" stylesheet
 * Reformat code to better meet WordPress Coding Standards
 * Update required version to WordPress 3.6
 * Updated inline documentation
