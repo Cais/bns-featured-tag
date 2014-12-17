@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.4
+Version: 2.5
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 Textdomain: bns-featured-tag
@@ -52,7 +52,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Update required version to WordPress 3.6
  *
  * @version     2.7
- * @date        ...
+ * @date        December 2014
  *
  * @todo        Add Link to title option
  */
@@ -1140,11 +1140,11 @@ $bnsft = new BNS_Featured_Tag_Widget();
  * @package BNS_Featured_Tag
  * @since   2.7
  *
- * @uses    wp_remote_get
- * @uses    is_wp_error
- * @uses    wp_kses_post
  * @uses    get_transient
+ * @uses    is_wp_error
  * @uses    set_transient
+ * @uses    wp_kses_post
+ * @uses    wp_remote_get
  *
  * @param $args
  */
@@ -1240,7 +1240,7 @@ function bnsft_in_plugin_update_message( $args ) {
 		/** End if - response message exists */
 
 		/** Set transient - minimize calls to WordPress */
-		//set_transient( $transient_name, $upgrade_notice, DAY_IN_SECONDS );
+		set_transient( $transient_name, $upgrade_notice, DAY_IN_SECONDS );
 
 	}
 	/** End if - transient check */
@@ -1250,4 +1250,4 @@ function bnsft_in_plugin_update_message( $args ) {
 }
 
 /** End function - in plugin update message */
-add_action( 'in_plugin_update_message-bns-featured-tag/bns-featured-tag.php', 'bnsft_in_plugin_update_message' );
+add_action( 'in_plugin_update_message-' . plugin_basename( __FILE__ ), 'bnsft_in_plugin_update_message' );

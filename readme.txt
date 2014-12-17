@@ -140,16 +140,18 @@ As of version 1.6.2 the Total Posts to Display is independent of the "posts per 
 == Upgrade Notice ==
 = 2.7 =
 Thank you for choosing `BNS Featured Tags` for your WordPress site.
-Please stay current with your WordPress installation, your active theme, and your plugins.
+See the current changelog under Plugins > Installed Plugins ...
+... and please stay current: with your WordPress installation; your active theme; and, your other active plugins, too!
 
 == Changelog ==
 = 2.7 =
-* Released ...
+* Released December 2014
 * Added plugin update message listing the changelog details from installed version to the current release
 * Minor code formatting improvements
 * Changed text domain from `bns-ft` to `bns-featured-tag`
 * Inline documentation updates
 * Re-factoring of method names to more simple non-prefixed versions
+* Updates to the `readme.txt` file
 
 = 2.6 =
 * Released May 2014
