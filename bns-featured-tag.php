@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.7-beta
+Version: 2.3
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 Textdomain: bns-featured-tag
@@ -1132,3 +1132,86 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 /** @var $bnsft - instantiate the class */
 $bnsft = new BNS_Featured_Tag_Widget();
+
+/**
+ * BNS Featured Tag Update Message
+ *
+ * @package BNS_Featured_Tag
+ * @since   2.7
+ *
+ * @uses    wp_remote_get
+ * @uses    is_wp_error
+ * @uses    wp_kses_post
+ * @uses    get_transient
+ * @uses    set_transient
+ *
+ * @param $args
+ */
+function bnsft_in_plugin_update_message( $args ) {
+
+	require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+	$bnsft_data = get_plugin_data( __FILE__ );
+
+	$transient_name = 'bnsft_upgrade_notice_' . $args['Version'];
+	if ( false === ( $upgrade_notice = get_transient( $transient_name ) ) ) {
+
+		/** @var string $response - get the readme.txt file from WordPress */
+		$response = wp_remote_get( 'https://plugins.svn.wordpress.org/bns-featured-tag/trunk/readme.txt' );
+
+		if ( ! is_wp_error( $response ) && ! empty( $response['body'] ) ) {
+			$matches = null;
+		}
+		$regexp         = '~==\s*Changelog\s*==\s*=\s*(.*)\s*=(.*)(=\s*' . preg_quote( $bnsft_data['Version'] ) . '\s*=|$)~Uis';
+		$upgrade_notice = '';
+
+		if ( preg_match( $regexp, $response['body'], $matches ) ) {
+			$version = trim( $matches[1] );
+			$notices = (array) preg_split( '~[\r\n]+~', trim( $matches[2] ) );
+
+			if ( version_compare( $bnsft_data['Version'], $version, '<' ) ) {
+
+				$upgrade_notice = '<style type="text/css">
+							.bnsft_plugin_upgrade_notice { padding-top: 20px; }
+							.bnsft_plugin_upgrade_notice ul { width: 50%; list-style: disc; margin-left: 20px; margin-top: 0px; }
+							.bnsft_plugin_upgrade_notice li { margin: 0; }
+						</style>';
+				$upgrade_notice .= '<div class="bnsft_plugin_upgrade_notice">';
+				$ul = false;
+				foreach ( $notices as $index => $line ) {
+					if ( preg_match( '~^=\s*(.*)\s*=$~i', $line ) ) {
+						if ( $ul ) {
+							$upgrade_notice .= '</ul><div style="clear: left;"></div>';
+						}
+						$upgrade_notice .= '<hr/>';
+						continue;
+					}
+					$return_value = '';
+					if ( preg_match( '~^\s*\*\s*~', $line ) ) {
+						if ( ! $ul ) {
+							$return_value = '<ul">';
+							$ul           = true;
+						}
+						$line = preg_replace( '~^\s*\*\s*~', '', htmlspecialchars( $line ) );
+						$return_value .= '<li style=" ' . ( $index % 2 == 0 ? 'clear: left;' : '' ) . '">' . $line . '</li>';
+					} else {
+						if ( $ul ) {
+							$return_value = '</ul><div style="clear: left;"></div>';
+							$return_value .= '<p>' . $line . '</p>';
+							$ul = false;
+						} else {
+							$return_value .= '<p>' . $line . '</p>';
+						}
+					}
+					$upgrade_notice .= wp_kses_post( preg_replace( '~\[([^\]]*)\]\(([^\)]*)\)~', '<a href="${2}">${1}</a>', $return_value ) );
+				}
+				$upgrade_notice .= '</div>';
+			}
+		}
+		set_transient( $transient_name, $upgrade_notice, DAY_IN_SECONDS );
+
+	}
+	echo $upgrade_notice;
+}
+
+
+add_action( 'in_plugin_update_message-bns-featured-tag/bns-featured-tag.php', 'bnsft_in_plugin_update_message' );

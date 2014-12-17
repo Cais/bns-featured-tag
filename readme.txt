@@ -145,10 +145,11 @@ Please stay current with your WordPress installation, your active theme, and you
 == Changelog ==
 = 2.7 =
 * Released ...
+* Added plugin update message listing the changelog details from installed version to the current release
 * Minor code formatting improvements
 * Changed text domain from `bns-ft` to `bns-featured-tag`
 * Inline documentation updates
-* Re-factoring of method names to more simply non-prefixed versions
+* Re-factoring of method names to more simple non-prefixed versions
 
 = 2.6 =
 * Released May 2014
