@@ -67,11 +67,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 *
 	 * @uses    (CONSTANT) WP_CONTENT_DIR
 	 * @uses    BNS_Featured_Tag_Widget::WP_Widget (factory)
-	 * @uses    BNS_Featured_Tag_Widget::BNSFT_Scripts_and_Styles
-	 * @uses    BNS_Featured_Tag_Widget::BNSFT_Options_Scripts_and_Styles
-	 * @uses    BNS_Featured_Tag_Widget::bnsft_plugin_meta
 	 * @uses    BNS_Featured_Tag_Widget::bnsft_shortcode
-	 * @uses    BNS_Featured_Tag_Widget::load_bnsft_widget
+	 * @uses    BNS_Featured_Tag_Widget::load_widget
+	 * @uses    BNS_Featured_Tag_Widget::plugin_meta
+	 * @uses    BNS_Featured_Tag_Widget::scripts_and_styles
+	 * @uses    BNS_Featured_Tag_Widget::scripts_and_styles_for_options
 	 * @uses    __
 	 * @uses    add_action
 	 * @uses    add_filter
@@ -117,7 +117,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		add_action(
 			'wp_enqueue_scripts', array(
 				$this,
-				'BNSFT_Scripts_and_Styles'
+				'scripts_and_styles'
 			)
 		);
 
@@ -125,7 +125,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		add_action(
 			'admin_enqueue_scripts', array(
 				$this,
-				'BNSFT_Options_Scripts_and_Styles'
+				'scripts_and_styles_for_options'
 			)
 		);
 
@@ -133,15 +133,15 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		add_filter(
 			'plugin_row_meta', array(
 			$this,
-			'bnsft_plugin_meta'
+			'plugin_meta'
 		), 10, 2
 		);
 
 		/** Add Shortcode */
 		add_shortcode( 'bnsft', array( $this, 'bnsft_shortcode' ) );
 
-		/** Add load_bnsft_widget function to the widgets_init hook */
-		add_action( 'widgets_init', array( $this, 'load_bnsft_widget' ) );
+		/** Add load_widget function to the widgets_init hook */
+		add_action( 'widgets_init', array( $this, 'load_widget' ) );
 
 	} /** End function - constructor */
 
@@ -171,7 +171,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * @date    December 1, 2012
 	 * Added filter to full post link element
 	 */
-	function bnsft_custom_excerpt( $text, $length = 55 ) {
+	function custom_excerpt( $text, $length = 55 ) {
 		$text  = strip_tags( $text );
 		$words = explode( ' ', $text, $length + 1 );
 
@@ -237,7 +237,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * Extracted `plugin_data` into its own method
 	 * Added upgrade safe path location for custom styles
 	 */
-	function BNSFT_Scripts_and_Styles() {
+	function scripts_and_styles() {
 
 		$bnsft_data = $this->plugin_data();
 
@@ -259,7 +259,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 
 	/**
-	 * Enqueue Options Plugin Scripts and Styles
+	 * Enqueue Scripts and Styles for Options
 	 *
 	 * Add plugin options scripts and stylesheet(s) to be used only on the Administration Panels
 	 *
@@ -282,7 +282,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * Added upgrade safe path location for custom styles
 	 * Extracted `plugin_data` into its own method
 	 */
-	function BNSFT_Options_Scripts_and_Styles() {
+	function scripts_and_styles_for_options() {
 
 		$bnsft_data = $this->plugin_data();
 
@@ -565,7 +565,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 									}
 									/** End if */
 
-									echo $this->bnsft_custom_excerpt( get_the_content(), $instance['excerpt_length'] );
+									echo $this->custom_excerpt( get_the_content(), $instance['excerpt_length'] );
 
 								} elseif ( ! $instance['no_excerpt'] ) {
 
@@ -1071,7 +1071,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * Added a "wish link"
 	 * Added a "support link"
 	 */
-	function bnsft_plugin_meta( $links, $file ) {
+	function plugin_meta( $links, $file ) {
 
 		$plugin_file = plugin_basename( __FILE__ );
 
@@ -1119,7 +1119,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * Load Widget
 	 * Register widget
 	 */
-	function load_bnsft_widget() {
+	function load_widget() {
 		register_widget( 'BNS_Featured_Tag_Widget' );
 	}
 	/** End function - register widget */

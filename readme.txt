@@ -148,6 +148,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * Minor code formatting improvements
 * Changed text domain from `bns-ft` to `bns-featured-tag`
 * Inline documentation updates
+* Re-factoring of method names to more simply non-prefixed versions
 
 = 2.6 =
 * Released May 2014
@@ -223,13 +224,13 @@ Please stay current with your WordPress installation, your active theme, and you
 * released November 2011
 * confirmed compatible with WordPress 3.3
 * added PHPDoc style documentation
-* added functionality to BNS Featured Tag Custom Excerpt function - see `bnsft_custom_excerpt`
+* added functionality to BNS Featured Tag Custom Excerpt function - see `custom_excerpt`
 * added stylesheet to manage plugin specific CSS elements
 * added support for bnsft-custom-style.css stylesheet (will not be over-written with updates)
 * added i18n support using `bns-ft` textdomain
 * added call to `the_excerpt` and wrapped post output in `bnsft-content` CSS element
 * added clearing CSS element and `wp_link_pages` after `the_content` call
-* changed `bnsft_first_words` to `bnsft_custom_excerpt`
+* changed `bnsft_first_words` to `custom_excerpt`
 * cleaned up code organization and optimization
 * cleaned up documentation
 * fixed 'only_titles' form issue
@@ -247,7 +248,7 @@ Please stay current with your WordPress installation, your active theme, and you
 * confirmed compatible with WordPress version 3.2
 * addressed some minor items in the readme (this file)
 * cleaned up some text strings in the code
-* minor variable changes - `load_bnsft_widget()`, `bnsft_custom_excerpt()`
+* minor variable changes - `load_widget()`, `custom_excerpt()`
 
 = 1.8.3 =
 * Confirm compatible with WordPress 3.1 (beta)
