@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.7
+Version: 2.7.1
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 Textdomain: bns-featured-tag
@@ -20,15 +20,15 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * categories; post tags; and either full post or excerpt (or any combination).
  *
  * @package     BNS_Featured_Tag
- * @version     2.7
- * @date        December 2014
+ * @version     2.7.1
+ * @date        June 2015
  *
  * @link        http://buynowshop.com/plugins/bns-featured-tag/
  * @link        https://github.com/Cais/bns-featured-tag/
  * @link        http://wordpress.org/extend/plugins/bns-featured-tag/
  *
  * @author      Edward Caissie <edward.caissie@gmail.com>
- * @copyright   Copyright (c) 2009-2014, Edward Caissie
+ * @copyright   Copyright (c) 2009-2015, Edward Caissie
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 2, as published by the
@@ -139,7 +139,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		/** Add load_widget function to the widgets_init hook */
 		add_action( 'widgets_init', array( $this, 'load_widget' ) );
 
-	} /** End function - constructor */
+	}
 
 
 	/**
@@ -168,6 +168,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * Added filter to full post link element
 	 */
 	function custom_excerpt( $text, $length = 55 ) {
+
 		$text  = strip_tags( $text );
 		$words = explode( ' ', $text, $length + 1 );
 
@@ -175,34 +176,34 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		$link_symbol = apply_filters( 'bnsft_link_symbol', '&infin;' );
 
 		/** Create link to full post for end of custom length excerpt output */
-		$bnsft_link = ' <strong>
-            <a class="bnsft-link" href="' . get_permalink() . '" title="' . the_title_attribute(
-				array(
-					'before' => __( 'Permalink to: ', 'bns-featured-tag' ),
-					'after'  => '',
-					'echo'   => false
-				)
-			) . '">'
-		              . $link_symbol .
-		              '</a>
-				</strong>';
+		$bnsft_link = ' <strong><a class="bnsft-link" href="'
+		              . get_permalink()
+		              . '" title="' . the_title_attribute( array(
+				'before' => __( 'Permalink to: ', 'bns-featured-tag' ),
+				'after'  => '',
+				'echo'   => false
+			) ) . '">'
+		              . $link_symbol . '</a></strong>';
 
 		if ( ( ! $length ) || ( count( $words ) < $length ) ) {
+
 			$text .= $bnsft_link;
 
 			return $text;
+
 		} else {
+
 			array_pop( $words );
 			array_push( $words, '...' );
 			$text = implode( ' ', $words );
+
 		}
-		/** End if - not length */
 
 		$text .= $bnsft_link;
 
 		return $text;
 
-	} /** End function - custom excerpt */
+	}
 
 
 	/**
@@ -243,15 +244,13 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-custom-style.css' ) ) {
 			wp_enqueue_style( 'BNSFT-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
 		}
-		/** End if - is readable */
 
 		/** For custom stylesheets in the /wp-content/bns-custom/ folder */
 		if ( is_readable( BNS_CUSTOM_PATH . 'bnsft-custom-style.css' ) ) {
 			wp_enqueue_style( 'BNSFT-Custom-Style', BNS_CUSTOM_URL . 'bnsft-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
 		}
-		/** End if - is readable */
 
-	} /** End function - scripts and styles */
+	}
 
 
 	/**
@@ -290,15 +289,13 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		if ( is_readable( plugin_dir_path( __FILE__ ) . 'bnsft-options-custom-style.css' ) ) {
 			wp_enqueue_style( 'BNSFT-Options-Custom-Style', plugin_dir_url( __FILE__ ) . 'bnsft-options-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
 		}
-		/** End if - is readable */
 
 		/** For custom stylesheets in the /wp-content/bns-custom/ folder */
 		if ( is_readable( BNS_CUSTOM_PATH . 'bnsft-options-custom-style.css' ) ) {
 			wp_enqueue_style( 'BNSFT-Options-Custom-Style', BNS_CUSTOM_URL . 'bnsft-options-custom-style.css', array(), $bnsft_data['Version'], 'screen' );
 		}
-		/** End if - is readable */
 
-	} /** End function - options scripts and styles */
+	}
 
 
 	/**
@@ -322,6 +319,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * Added `bnsft-no-posts-message` and `bnsft-widget-title` classes
 	 */
 	function widget( $args, $instance ) {
+
 		extract( $args );
 
 		/** User-selected settings */
@@ -354,14 +352,16 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 		/** Widget $title $before_widget and $after_widget defined by theme */
 		if ( $title ) {
+
 			/** @var string $before_title - defined by theme */
 			/** @var string $after_title - defined by theme */
 			echo $before_title . '<span class="bnsft-widget-title">' . $title . '</span>' . $after_title;
+
 		}
-		/** End if - title */
 
 		/** Use current post tag(s) when in single view */
 		if ( is_single() && $use_current ) {
+
 			/** Get the global post object to find the tags */
 			global $post;
 			/** @var $tag_choice - clear current choice(s) */
@@ -370,9 +370,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 			foreach ( get_the_tags( $post->ID ) as $current_tag ) {
 				$tag_choice .= $current_tag->name . ', ';
 			}
-			/** End foreach - get the tags */
+
 		}
-		/** End if - is single and use current */
 
 		/** Replace spaces with hyphens to create tag slugs from the name */
 		$tag_choice = str_replace( ' ', '-', $tag_choice );
@@ -389,10 +388,11 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 		/** Do not include current post in single view */
 		if ( is_single() && $exclude_current ) {
+
 			$excluded_post = get_the_ID();
 			$query_args    = array_merge( $query_args, array( 'post__not_in' => array( $excluded_post ) ) );
+
 		}
-		/** End if - is single and exclude current */
 
 		/**
 		 * Check if $sort_order is set to rand (random) and use the `orderby`
@@ -403,7 +403,6 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		} else {
 			$query_args = array_merge( $query_args, array( 'order' => $sort_order ) );
 		}
-		/** End if - set query argument parameter */
 
 		/**
 		 * Check if post need to be in *all* tags and make necessary
@@ -428,7 +427,6 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 			$query_args = array_merge( $query_args, array( 'tag__and' => $tag_choice_union ) );
 
 		}
-		/** End if - do we want to use a union of the categories */
 
 		if ( is_single() && $union ) {
 
@@ -439,7 +437,6 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 			$query_args = array_merge( $query_args, array( 'tag' => $tag_choice ) );
 
 		}
-		/** End if - is single and union */
 
 		/** @var $bnsft_query - object of posts matching query criteria */
 		$bnsft_query = false;
@@ -450,7 +447,6 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		if ( false == $bnsft_query ) {
 			$bnsft_query = new WP_Query( $query_args );
 		}
-		/** End if - bnsft query is false, use plugin arguments */
 
 		/** @var $bnsft_output - hook test */
 		$bnsft_output = false;
@@ -463,51 +459,55 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 			if ( $show_tag_desc ) {
 				echo '<div class="bnsft-tag-desc">' . tag_description() . '</div>';
 			}
-			/** End if - show tag description */
 
 			/** Display posts from widget settings */
 			if ( $bnsft_query->have_posts() ) : while ( $bnsft_query->have_posts() ) : $bnsft_query->the_post();
 
 				if ( $count == $show_count ) {
 					break;
-				} else {
-					?>
+				} else { ?>
 
 					<div <?php post_class(); ?>>
 
 						<?php if ( ! $no_titles ) { ?>
-							<strong><a href="<?php the_permalink() ?>"
-							           rel="bookmark"
-							           title="<?php _e( 'Permanent Link to', 'bns-featured-tag' ); ?> <?php the_title_attribute(); ?>"><?php the_title(); ?></a></strong>
+
+							<strong><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e( 'Permanent Link to', 'bns-featured-tag' ); ?> <?php the_title_attribute(); ?>"><?php the_title(); ?></a></strong>
+
 						<?php } ?>
 
 						<div class="post-details">
 
 							<?php if ( $show_meta ) {
+
 								echo apply_filters( 'bnsft_show_meta', sprintf( __( 'by %1$s on %2$s', 'bns-featured-tag' ), get_the_author(), get_the_time( get_option( 'date_format' ) ) ) ); ?>
+
 								<br />
-							<?php
-							}
-							/** End if - show meta */
+
+							<?php }
 
 							if ( ( $show_comments ) && ( ! post_password_required() ) ) {
+
 								comments_popup_link( __( 'with No Comments', 'bns-featured-tag' ), __( 'with 1 Comment', 'bns-featured-tag' ), __( 'with % Comments', 'bns-featured-tag' ), '', __( 'with Comments Closed', 'bns-featured-tag' ) ); ?>
+
 								<br />
-							<?php
-							}
-							/** End if - show comments */
+
+							<?php }
 
 							if ( $show_cats ) {
+
 								echo apply_filters( 'bnsft_show_cats', sprintf( __( 'in %s', 'bns-featured-tag' ), get_the_category_list( ', ' ) ) ); ?>
+
 								<br />
-							<?php
-							}
-							/** End if - show categories */
+
+							<?php }
 
 							if ( $show_tags ) {
+
 								the_tags( __( 'as ', 'bns-featured-tag' ), ', ', '' ); ?>
+
 								<br />
-							<?php } /** End if - show tags */ ?>
+
+							<?php } ?>
 
 						</div>
 						<!-- .post-details -->
@@ -519,8 +519,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 								<?php if ( $show_full ) {
 
 									/** Conditions: Theme supports post-thumbnails -and- there is a post-thumbnail -and- the option to show the post thumbnail is checked */
-									if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) {
-										?>
+									if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) { ?>
+
 										<a href="<?php the_permalink() ?>"
 										   rel="bookmark"
 										   title="<?php _e( 'Permanent Link to', 'bns-featured-tag' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail(
@@ -529,9 +529,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 													$content_thumb
 												), array( 'class' => 'alignleft' )
 											); ?></a>
-									<?php
-									}
-									/** End if  */
+
+									<?php }
 
 									the_content(); ?>
 
@@ -547,8 +546,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 								} elseif ( isset( $instance['excerpt_length'] ) && $instance['excerpt_length'] > 0 ) {
 
-									if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) {
-										?>
+									if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) { ?>
+
 										<a href="<?php the_permalink() ?>"
 										   rel="bookmark"
 										   title="<?php _e( 'Permanent Link to', 'bns-featured-tag' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail(
@@ -557,16 +556,15 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 													$excerpt_thumb
 												), array( 'class' => 'alignleft' )
 											); ?></a>
-									<?php
-									}
-									/** End if */
+
+									<?php }
 
 									echo $this->custom_excerpt( get_the_content(), $instance['excerpt_length'] );
 
 								} elseif ( ! $instance['no_excerpt'] ) {
 
-									if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) {
-										?>
+									if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) { ?>
+
 										<a href="<?php the_permalink() ?>"
 										   rel="bookmark"
 										   title="<?php _e( 'Permanent Link to', 'bns-featured-tag' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail(
@@ -575,16 +573,15 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 													$excerpt_thumb
 												), array( 'class' => 'alignleft' )
 											); ?></a>
-									<?php
-									}
-									/** End if */
+
+									<?php }
 
 									the_excerpt();
 
 								} else {
 
-									if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) {
-										?>
+									if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail() && ( $use_thumbnails ) ) { ?>
+
 										<a href="<?php the_permalink() ?>"
 										   rel="bookmark"
 										   title="<?php _e( 'Permanent Link to', 'bns-featured-tag' ); ?> <?php the_title_attribute(); ?>"><?php the_post_thumbnail(
@@ -593,24 +590,22 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 													$content_thumb
 												), array( 'class' => 'alignleft' )
 											); ?></a>
-									<?php
-									}
-									/** End if */
+
+									<?php }
 
 									the_excerpt();
 
-								} /** End if - show full */
-								?>
+								} ?>
 
 							</div> <!-- .bnsft-content -->
 
-						<?php } /** End if - not only titles */ ?>
+						<?php } ?>
 
 					</div> <!-- .post #post-ID -->
 
 					<?php $count ++;
 
-				} /** End if - count */
+				}
 
 			endwhile;
 			else :
@@ -618,10 +613,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 				apply_filters( 'bnsft_no_posts_message', '<span class="bnsft-no-posts-message">' . __( 'Yes, we have no bananas, or posts, today.', 'bns-featured-tag' ) . '</span>' );
 
 			endif;
-			/** End if - have posts */
 
 		}
-		/** End if - replace entire output when hook `bnsft_output` is used */
 
 		/** @var $after_widget string - defined by theme */
 		echo $after_widget;
@@ -629,7 +622,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		/** Make sure to clean up after ourselves */
 		wp_reset_postdata();
 
-	} /** End function - widget */
+	}
 
 
 	/**
@@ -641,6 +634,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * @return  array
 	 */
 	function update( $new_instance, $old_instance ) {
+
 		$instance = $old_instance;
 
 		/** Strip tags (if needed) and update the widget settings */
@@ -670,11 +664,12 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 		return $instance;
 
-	} /** End function - update */
+	}
 
 
 	/**
 	 * Form
+	 *
 	 * The plugin form found in the widget options panel. This is where the
 	 * various settings are entered.
 	 *
@@ -700,6 +695,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * Moved inline options styles into "options" stylesheet
 	 */
 	function form( $instance ) {
+
 		/** Set up default widget settings */
 		$defaults = array(
 			'title'           => __( 'Featured Tag', 'bns-featured-tag' ),
@@ -725,8 +721,8 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 			'excerpt_length'  => '',
 			'no_excerpt'      => false,
 		);
-		$instance = wp_parse_args( ( array ) $instance, $defaults );
-		?>
+		$instance = wp_parse_args( ( array ) $instance, $defaults ); ?>
+
 		<p>
 			<label
 				for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'bns-featured-tag' ); ?></label>
@@ -971,12 +967,12 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 			       name="<?php echo $this->get_field_name( 'no_excerpt' ); ?>" />
 		</p>
 
-	<?php
-	} /** End function - form */
+	<?php }
 
 
 	/**
 	 * BNSFT Shortcode Start
+	 *
 	 * - May the Gods of programming protect us all!
 	 *
 	 * @package BNS_Featured_Tag
@@ -1000,6 +996,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * Optimize output buffer closure in shortcode function
 	 */
 	function bnsft_shortcode( $atts ) {
+
 		/** Get ready to capture the elusive widget output */
 		ob_start();
 		the_widget(
@@ -1043,11 +1040,12 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 		return $bnsft_content;
 
-	} /** End function - shortcode */
+	}
 
 
 	/**
 	 * BNSFT Plugin Meta
+	 *
 	 * Adds additional links to plugin meta links
 	 *
 	 * @package    BNS_Featured_Tag
@@ -1083,15 +1081,14 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 
 		}
 
-		/** End if - file is the same as plugin */
-
 		return $links;
 
-	} /** End function - plugin meta */
+	}
 
 
 	/**
 	 * Plugin Data
+	 *
 	 * Returns the plugin header data as an array
 	 *
 	 * @package    BNS_Featured_Tag
@@ -1102,28 +1099,28 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * @return array
 	 */
 	function plugin_data() {
+
 		/** Call the wp-admin plugin code */
 		require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 		/** @var $plugin_data - holds the plugin header data */
 		$plugin_data = get_plugin_data( __FILE__ );
 
 		return $plugin_data;
-	} /** End function - plugin data */
+
+	}
 
 
 	/**
 	 * Load Widget
+	 *
 	 * Register widget
 	 */
 	function load_widget() {
 		register_widget( 'BNS_Featured_Tag_Widget' );
 	}
-	/** End function - register widget */
 
 
 }
-
-/** End class BNS_Featured_Tag_Widget */
 
 
 /** @var $bnsft - instantiate the class */
@@ -1186,13 +1183,11 @@ function bnsft_in_plugin_update_message( $args ) {
 						if ( $ul ) {
 							$upgrade_notice .= '</ul><div style="clear: left;"></div>';
 						}
-						/** End if - unordered list created */
 
 						$upgrade_notice .= '<hr/>';
 						continue;
 
 					}
-					/** End if - non-blank line */
 
 					/** @var string $return_value - body of message */
 					$return_value = '';
@@ -1200,10 +1195,11 @@ function bnsft_in_plugin_update_message( $args ) {
 					if ( preg_match( '~^\s*\*\s*~', $line ) ) {
 
 						if ( ! $ul ) {
+
 							$return_value = '<ul">';
 							$ul           = true;
+
 						}
-						/** End if - unordered list not started */
 
 						$line = preg_replace( '~^\s*\*\s*~', '', htmlspecialchars( $line ) );
 						$return_value .= '<li style=" ' . ( $index % 2 == 0 ? 'clear: left;' : '' ) . '">' . $line . '</li>';
@@ -1211,39 +1207,36 @@ function bnsft_in_plugin_update_message( $args ) {
 					} else {
 
 						if ( $ul ) {
+
 							$return_value = '</ul><div style="clear: left;"></div>';
 							$return_value .= '<p>' . $line . '</p>';
 							$ul = false;
+
 						} else {
+
 							$return_value .= '<p>' . $line . '</p>';
+
 						}
-						/** End if - unordered list started */
 
 					}
-					/** End if - non-blank line */
 
 					$upgrade_notice .= wp_kses_post( preg_replace( '~\[([^\]]*)\]\(([^\)]*)\)~', '<a href="${2}">${1}</a>', $return_value ) );
 
 				}
-				/** End foreach - line parsing */
 
 				$upgrade_notice .= '</div>';
 
 			}
-			/** End if - version compare */
 
 		}
-		/** End if - response message exists */
 
 		/** Set transient - minimize calls to WordPress */
 		set_transient( $transient_name, $upgrade_notice, DAY_IN_SECONDS );
 
 	}
-	/** End if - transient check */
 
 	echo $upgrade_notice;
 
 }
 
-/** End function - in plugin update message */
 add_action( 'in_plugin_update_message-' . plugin_basename( __FILE__ ), 'bnsft_in_plugin_update_message' );
