@@ -3,7 +3,7 @@ Contributors: cais
 Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, shortcode
 Requires at least: 3.6
-Tested up to: 4.2.2.
+Tested up to: 4.2.2
 Stable tag: 2.7.1
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
