@@ -3,7 +3,7 @@
 Plugin Name: BNS Featured Tag
 Plugin URI: http://buynowshop.com/plugins/bns-featured-tag/
 Description: Plugin with multi-widget functionality that displays most recent posts from specific tag or tags (set with user options). Also includes user options to display: Tag Description; Author and meta details; comment totals; post categories; post tags; and either full post or excerpt (or any combination).
-Version: 2.7.1
+Version: 2.7.2
 Author: Edward Caissie
 Author URI: http://edwardcaissie.com/
 Textdomain: bns-featured-tag
@@ -20,7 +20,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * categories; post tags; and either full post or excerpt (or any combination).
  *
  * @package     BNS_Featured_Tag
- * @version     2.7.1
+ * @version     2.7.2
  * @date        June 2015
  *
  * @link        http://buynowshop.com/plugins/bns-featured-tag/
@@ -73,8 +73,12 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 	 * @uses    add_filter
 	 * @uses    add_shortcode
 	 * @uses    content_url
+	 *
+	 * @version 2.7.2
+	 * @date    July 4, 2015
+	 * Renamed to use `__construct` as the constructor method
 	 */
-	function BNS_Featured_Tag_Widget() {
+	function __construct() {
 		/**
 		 * Check installed WordPress version for compatibility
 		 * @internal    Requires WordPress version 3.6
@@ -97,7 +101,7 @@ class BNS_Featured_Tag_Widget extends WP_Widget {
 		$control_ops = array( 'width' => 200, 'id_base' => 'bns-featured-tag' );
 
 		/** Create the widget */
-		$this->WP_Widget( 'bns-featured-tag', 'BNS Featured Tag', $widget_ops, $control_ops );
+		parent::__construct( 'bns-featured-tag', 'BNS Featured Tag', $widget_ops, $control_ops );
 
 		/** Define location for BNS plugin customizations */
 		if ( ! defined( 'BNS_CUSTOM_PATH' ) ) {

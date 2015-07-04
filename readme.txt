@@ -4,7 +4,7 @@ Donate link: http://buynowshop.com
 Tags: posts, tags, featured, multi-widget, user-options, shortcode
 Requires at least: 3.6
 Tested up to: 4.2.2
-Stable tag: 2.7.1
+Stable tag: 2.7.2
 License: GNU General Public License v2
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -143,6 +143,10 @@ See the current changelog under Plugins > Installed Plugins ...
 ... and please stay current: with your WordPress installation; your active theme; and, your other active plugins, too!
 
 == Changelog ==
+= 2.7.2 =
+* Released ...
+* Updated to use PHP5 constructor objects
+
 = 2.7.1 =
 * Released June 2015
 * Minor inline documentation clean up and copyright years updates
